@@ -1,0 +1,26 @@
+.main{
+    background-color: #f4f5f5;
+    height: 10000px;
+    padding: 0 0 0 196px;
+}
+.body{
+    width: 1140px;
+    padding-top: 20px;
+    display: flex;
+    .content{
+      background-color: white;
+      width: 756px;
+      height: auto;
+      padding: 32px 32px 0 32px;
+      border-radius: 5px;
+    }
+}
+// .author{
+//     background-color: white;
+//         margin-left: 20px;
+//         width: 260px;
+//         height: 187px;
+//         padding: 16px;
+//         margin-bottom: 16px;
+//         display: flex;
+// }
