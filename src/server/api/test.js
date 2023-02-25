@@ -4,6 +4,7 @@ export default defineEventHandler(async () => {
   const reqQuery = `query {
     articles{
       data{
+        id,
         attributes{
           tittle,
           content,
