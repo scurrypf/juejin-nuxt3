@@ -10,9 +10,13 @@ import mermaid from '@bytemd/plugin-mermaid'
 import frontmatter from '@bytemd/plugin-frontmatter'
 import themeStyle from '../utils/theme'
 import highlightStyle from '../utils/highLight'
+import { getProcessor } from 'bytemd'
+import { visit } from 'unist-util-visit'
 
+// 渲染文章
 const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji(), gfm(), highlight(), math(), medium({ background: 'rgba(0, 0, 0, 0.7)' }), mermaid()]
 const article = await useFetch('/api/article');
+
 const display = article.data.value.content;
 const src = `http://localhost:1337${article.data.value.img.url}`
 const good = article.data.value.good;
@@ -23,6 +27,107 @@ const level = `http://localhost:1337${article.data.value.author.level.url}`;
 const badage = `http://localhost:1337${article.data.value.author.badge.url}`;
 const headImg = `http://localhost:1337${article.data.value.author.headImg.url}`;
 const authorDiscuss = article.data.value.author.discuss;
+
+// 生成目录
+let catalogueList = ref([]);
+// 将标题节点编译成文本
+const stringifyHeading = function (e) {
+    let result = ''
+    visit(e, (node) => {
+        if (node.type === 'text') {
+            result += node.value;
+        }
+    })
+    return result;
+}
+// 生成目录
+getProcessor({
+  plugins: [
+    {   // 通过getProcessor得到的文章的节点
+        rehype: (p) => p.use(() => (tree) => {
+            // console.log(tree)
+            if (tree && tree.children.length) {
+                let items = [];
+                // 过滤出html的DOM节点
+                let elementTree = tree.children.filter((v) => {
+                    // filter要return回去😭😭😭
+                    return v.type === 'element'
+                })
+                // console.log(elementTree);
+                // 通过forEach遍历
+                elementTree.forEach((node) => {
+                    // console.log(node)
+                    const removeTheme = node.children.filter((item) => item.value?.includes('theme'))
+                    const removeHl = node.children.filter((item) => item.value?.includes('highlight'))
+                    if (node.tagName[0] === 'h' && node.children.length && removeTheme.length === 0 && removeHl.length === 0) {
+                        const i = Number(node.tagName[1])
+                        items.push({
+                            level: i,
+                            text: stringifyHeading(node),
+                        })
+                    }
+                })
+                // console.log(items)
+                // 筛选出h1、h2、h3标题，然后赋给catalogueList渲染
+                catalogueList.value = items.filter((v) => {
+                    return v.level === 1 || v.level === 2 || v.level === 3;
+                });
+            }
+        }),
+    },
+  ],
+}).processSync(display);
+let creatCatogry = catalogueList.value;
+
+// 赋值属性唯一ID
+const transformToId = () => {
+  const articleDom = document.getElementById('markdown-body');
+    const children = Array.from(articleDom.children);
+    if (children.length > 0) {
+      let index = 0;
+      for (let i = 0; i < children.length; i++) {
+        const tagName = children[i].tagName;
+        if (tagName === 'H1' || tagName === 'H2' || tagName === 'H3') {
+          children[i].setAttribute('data-id', `heading-${index}`);
+          index++;
+        }
+      }
+    }
+}
+
+const activeSelect = (index) => {
+  if (isActive.value === index)
+    return
+  // a标签锚点定位时跳转会出现将元素置最左, 所以用scrollIntoView定位
+  heading.value[index].scrollIntoView()
+  window.scrollBy(0, -headerHeight.value - 30)
+  isActive.value = index
+}
+
+const getInitByScroll = () => {
+  const articleDom = document.getElementById('markdown-body')
+  const headings = articleDom?.querySelectorAll('h1, h2, h3')
+  headings?.forEach((item) => {
+    heading.value.push(item)
+  })
+
+  navMid.value = navRef.value.clientHeight / 2
+  headerHeight.value = document.querySelector('.main-header').clientHeight
+  catalogueEleTop.value = (document.querySelector('.sticky-block-box')).offsetTop
+  itemOffsetTop.value = []
+  props.catalogueList.forEach((val, i) => {
+    const firstHead = heading.value[i]
+    if (firstHead) {
+      itemOffsetTop.value?.push({
+        key: i,
+        top: firstHead.offsetTop,
+      })
+    }
+  })
+}
+
+// console.log(catalogueList.value);
+
 </script>
 
 <template>
@@ -131,9 +236,10 @@ const authorDiscuss = article.data.value.author.discuss;
                 <div class="dir-tittle">
                     目录
                 </div>
+                <el-divider />
                 <!--TODO:目录生成-->
-                <div class="dir-content">
-
+                <div class="dir-content" v-for="(item) in creatCatogry" :key="item.level">
+                    {{item.text}}
                 </div>
             </div>
             </div>
@@ -337,6 +443,16 @@ h1{
         height: 24px;
         padding-bottom: 15px;
         border-bottom: 1px solid #f1f1f1;
+    }
+    .el-divider{
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    .dir-content{
+        width: 256px;
+        height: 21px;
+        padding: 8px;
+        font-size: 14px;
     }
 }
 .aside-btns{
