@@ -12,6 +12,7 @@ import themeStyle from '../utils/theme'
 import highlightStyle from '../utils/highLight'
 import { getProcessor } from 'bytemd'
 import { visit } from 'unist-util-visit'
+import { onMounted, reactive, ref, nextTick } from 'vue'
 
 // 渲染文章
 const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji(), gfm(), highlight(), math(), medium({ background: 'rgba(0, 0, 0, 0.7)' }), mermaid()]
@@ -70,7 +71,7 @@ getProcessor({
                 // console.log(items)
                 // 筛选出h1、h2、h3标题，然后赋给catalogueList渲染
                 catalogueList.value = items.filter((v) => {
-                    return v.level === 1 || v.level === 2 || v.level === 3;
+                    return v.level === 1 || v.level === 2 || v.level === 3 || v.level === 4;
                 });
             }
         }),
@@ -78,10 +79,34 @@ getProcessor({
   ],
 }).processSync(display);
 let creatCatogry = catalogueList.value;
+console.log(creatCatogry);
+
+// 标题样式改变
+const cateClass = (type) => {
+    if (type === 2) return 'dir-content1';
+    if (type === 3) return 'dir-content2';
+    if (type === 4) return 'dir-content3';
+    return 'dir-content1';
+}
+
+var isActive = shallowRef();
+var heading = ref([]);
+var headerHeight = shallowRef(0);
+var itemOffsetTop = ref([]);
+var liRef = ref([]);
+// const cata = reactive({
+//     menuData: [],
+//     menuState: '',
+// })
+const navRef = ref()
+const navMid = shallowRef(0)
+const catalogueEleTop = shallowRef(0)
+const currentScrollTop = shallowRef(0)
 
 // 赋值属性唯一ID
 const transformToId = () => {
   const articleDom = document.getElementById('markdown-body');
+  console.log(articleDom);
     const children = Array.from(articleDom.children);
     if (children.length > 0) {
       let index = 0;
@@ -89,42 +114,81 @@ const transformToId = () => {
         const tagName = children[i].tagName;
         if (tagName === 'H1' || tagName === 'H2' || tagName === 'H3') {
           children[i].setAttribute('data-id', `heading-${index}`);
+          console.log(children[i],index)
           index++;
         }
       }
     }
 }
 
+onMounted(()=>{
+    transformToId()
+});
+// 实现点击跳转
 const activeSelect = (index) => {
-  if (isActive.value === index)
-    return
-  // a标签锚点定位时跳转会出现将元素置最左, 所以用scrollIntoView定位
-  heading.value[index].scrollIntoView()
-  window.scrollBy(0, -headerHeight.value - 30)
-  isActive.value = index
+    if (isActive.value === index) return;
+    // a标签锚点定位时跳转会出现将元素置最左, 所以用scrollIntoView定位
+    heading.value[index].scrollIntoView();
+    window.scrollBy(0, -headerHeight.value - 30);
+    isActive.value = index;
 }
 
 const getInitByScroll = () => {
-  const articleDom = document.getElementById('markdown-body')
-  const headings = articleDom?.querySelectorAll('h1, h2, h3')
-  headings?.forEach((item) => {
-    heading.value.push(item)
-  })
+    const articleDom = document.getElementById('markdown-body');
+    const headings = articleDom?.querySelectorAll('h1, h2, h3, h4');
+    headings?.forEach((item) => {
+        heading.value.push(item);
+    })
+    itemOffsetTop.value = [];
+    creatCatogry.forEach((val, i) => {
+        const firstHead = heading.value[i];
+        if (firstHead) {
+            itemOffsetTop.value?.push({
+                key: i,
+                top: firstHead.offsetTop,
+            })
+        }
+    })
 
-  navMid.value = navRef.value.clientHeight / 2
-  headerHeight.value = document.querySelector('.main-header').clientHeight
-  catalogueEleTop.value = (document.querySelector('.sticky-block-box')).offsetTop
-  itemOffsetTop.value = []
-  props.catalogueList.forEach((val, i) => {
-    const firstHead = heading.value[i]
-    if (firstHead) {
-      itemOffsetTop.value?.push({
-        key: i,
-        top: firstHead.offsetTop,
-      })
-    }
-  })
 }
+
+const onScroll = () => {
+    currentScrollTop.value = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
+    console.log(currentScrollTop.value)
+    const scrollTop = currentScrollTop.value - headerHeight.value + 20;
+    const itemOffsetTopLength = itemOffsetTop.value.length
+    // console.log(scrollTop,itemOffsetTopLength)
+    for (let n = 0; n < itemOffsetTopLength; n++) {
+        if (scrollTop >= itemOffsetTop.value[n].top - headerHeight.value)
+        isActive.value = itemOffsetTop.value[n].key
+        console.log(isActive.value)
+    }
+
+    if (isActive.value) {
+        const activeEleTop = liRef.value[isActive.value].offsetTop
+        console.log(navMid.value , activeEleTop)
+        navMid.value > activeEleTop
+        ? navRef.value.scrollTo({
+            top: 0,
+        })
+        : navRef.value.scrollTo({
+            top: activeEleTop - navMid.value,
+        })
+    }
+}
+
+
+onMounted(() => {
+    window.addEventListener('scroll', onScroll)
+    nextTick(() => {
+        getInitByScroll();
+    })
+}
+);
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+})
 
 // console.log(catalogueList.value);
 
@@ -175,6 +239,14 @@ const getInitByScroll = () => {
                 </div>
                 <div class="content-body">
                     <Viewer id="markdown-body" class="markdown-body" :value="display" :plugins="plugins" />
+                </div>
+                <div class="body-bottom">
+                    <div class="bottom-tab">
+                        底部Tab
+                    </div>
+                    <div class="bottom-info">
+                        插件
+                    </div>
                 </div>    
             </div>
             <div>
@@ -238,8 +310,12 @@ const getInitByScroll = () => {
                 </div>
                 <el-divider />
                 <!--TODO:目录生成-->
-                <div class="dir-content" v-for="(item) in creatCatogry" :key="item.level">
+                <div ref="navRef">
+                <div v-for="(item,index) in creatCatogry" ref="liRef" :key="index" :class="[{ active: index === isActive }, cateClass(item.level)]" @click="activeSelect(index)" >
+                    <NuxtLink>
                     {{item.text}}
+                    </NuxtLink>
+                </div>
                 </div>
             </div>
             </div>
@@ -251,7 +327,7 @@ const getInitByScroll = () => {
 @import "@/assets/scss/article.scss";
 .main{
     background-color: #f4f5f5;
-    height: 10000px;
+    height: auto;
     padding: 0 0 0 196px;
 }
 h1{
@@ -299,6 +375,21 @@ h1{
             }
         }
       }
+    }
+}
+.body-bottom{
+    width: 756px;
+    height: 126px;
+    padding-top: 10px;
+    padding-bottom: 40px;
+    .bottom-tab{
+        height: 43px;
+    }
+    .bottom-info{
+        width: 724px;
+        height: 54px;
+        padding: 0 16px 0 16px;
+        margin-top: 40px;
     }
 }
 .author{
@@ -448,12 +539,46 @@ h1{
         margin-top: 20px;
         margin-bottom: 10px;
     }
-    .dir-content{
+    .dir-content1{
         width: 256px;
         height: 21px;
         padding: 8px;
         font-size: 14px;
+        &:hover{
+            cursor: pointer;
+            background-color: #f4f5f3b5;
+        }    
     }
+    .active{
+        color: #1e80ff;
+    }
+    .dir-content2{
+        width: 256px;
+        height: 21px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-right: 8px;
+        padding-left: 18px; 
+        font-size: 14px;
+        &:hover{
+            cursor: pointer;
+            background-color: #f4f5f3b5;
+        }
+    }
+    .dir-content3{
+        width: 256px;
+        height: 21px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-right: 8px;
+        padding-left: 28px;
+        font-size: 14px;
+        &:hover{
+            cursor: pointer;
+            background-color: #f4f5f3b5;
+        }
+    }
+    
 }
 .aside-btns{
     position: fixed;

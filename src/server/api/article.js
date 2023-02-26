@@ -1,7 +1,7 @@
 import { useGraphql } from '../../utils/useGraph'
 
 export default defineEventHandler(async () => {
-  let n = 3;
+  let n = 5;
   const reqQuery = `query {
     article(id:${n}){
       data{
