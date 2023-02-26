@@ -17,8 +17,7 @@
             <div>阅读</div>
           </div>
       </div>
-      <div class="body">
-       
+      <div class="body"> 
         <div class="main">
           <div class="content">
             <div class="content-nav">
@@ -27,9 +26,19 @@
               <div style="border-right: none;">热榜</div>
             </div>
             <div class="content-body">
+              <div class="list-tab">
+                <span class="tad-write">kokomi | 1天前 | 前端</span>
+              </div>
               <div class="main-content">
                 <!--TODO:文章列表-->
-                <router-link to="/detail" class="test">{{data[0].content}}</router-link>
+                <router-link to="/detail" class="tittle" target="_blank">
+                  计算机网络模型
+                </router-link>
+                <div style="margin-top: 10px;">
+                   <router-link to="/detail" class="test" target="_blank">
+                    安卓高级工程师「奔波儿灞取经」，通过“数据结构+计算机网络+操作系统+设计模式”，软硬兼修，深入浅出带你夯实程序员基本功！
+                  </router-link>
+                </div>
               </div>
             </div>
           </div>
@@ -85,4 +94,166 @@ useHead({
 
 <style lang="scss" scoped>
 @import "@/assets/scss/home.scss";
+.container{
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .nav{
+    height: 60px;
+    width: 100%;
+    // position: sticky;
+    // top: 0px;
+    // z-index: 993;
+    background-color: white;
+    
+  }
+  .body{
+    background-color: #f4f5f5;
+    height: 6000px;
+    padding: 0 286px 0 286px;
+  }
+  .main{
+    width: 960px;;
+    padding-top: 15px;
+    display: flex;
+    .content{
+      background-color: white;
+      width: 700px;
+      height: 1000px;
+      .content-nav{
+        height: 15px;
+        padding: 15px 12px 15px 12px;
+        border-bottom: 1px solid #f4f4f4;
+        display: flex;;
+  
+        div{
+          font-size: 14px;;
+          color: #5e6d82;
+          padding: 0 14.5px 0 14.5px;
+          border-right: 1px solid #f4f4f4;
+          &:hover{
+            cursor: pointer;
+            color: #1e80ff;
+          }
+        }
+      }
+      .content-body{
+        width: 660px;
+        height: 129px;
+        margin: 12px 20px 0px 20px;
+        border-bottom: 1px solid #f4f5f5;
+      }
+    }
+    // .tips{
+      // background-color: white;
+      // width: 240px;
+      // height: 48px;
+      // margin-left: 20px;
+      .tip-first{
+        background-color: white;
+        margin-left: 20px;
+        width: 208px;
+        height: 48px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: flex;
+        .icon-text{
+          .night{
+          font-weight: 600;
+          font-size: 16px;
+          color: black;
+        }
+        div{
+          color: #abb0ba;
+          font-size: 12px;
+          width: 108px;
+          height: 24px;
+          vertical-align:middle;
+        }
+        }
+        .btn{
+          width: 74px;
+          height: 36px;
+          margin-left: 28px;
+          text-align: right;
+        }
+      }
+      .tip-second{
+        margin-left: 20px;
+        margin-bottom: 16px;
+      }
+    //}
+  }
+  .toTop{
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background-color: #fff;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: #409eff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 6px rgb(0 0 0 / 12%);
+      cursor: pointer;
+      z-index: 5;
+  }
+  .nav-bottom{
+      height: 46px;
+      width: 100%;
+      position: sticky;
+      top: 0px;
+      z-index: 999;
+      background-color: white;
+      .Tab{
+        position: absolute;
+        left: 274px;
+        width: 960px;
+        height: 100%;
+        display: flex;
+        flex-wrap:wrap;
+        div{
+          padding: 0 12px 0 12px;
+          font-size: 14px;
+          color: #5e6d82;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &:hover{
+            cursor: pointer;
+            color: #1e80ff;
+          }
+        }
+      }
+    }
+.main-content{
+  color: black;
+  width: 660px;
+  height: 84px;
+  margin-top: 6px;
+  padding-bottom: 12px;
+  .tittle{
+    color: black;
+    text-decoration:none;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 24px;
+  }
+}
+.list-tab{
+  width: 660px;
+  height: 22px;
+  .tad-write{
+    font-size: 14px;
+  }
+}
+.test{
+  color: #5e6d82;
+  text-decoration:none;
+  font-size: 14px;
+}
 </style>

@@ -18,11 +18,7 @@ import { onMounted, onUnmounted, ref, nextTick } from 'vue'
 const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji(), gfm(), highlight(), math(), 
                  medium({ background: 'rgba(0, 0, 0, 0.7)' }), mermaid()]
 const article = await useFetch('/api/article');
-const ad = await useFetch('/api/ad');
-const about = await useFetch('/api/aboutArt');
 
-const aboutArr = about.data.value.data[0].articles.data;
-const adSrc = `http://localhost:1337${ad.data.value.adimg.url}`
 const display = article.data.value.content;
 const src = `http://localhost:1337${article.data.value.img.url}`
 const good = article.data.value.good;
@@ -84,6 +80,7 @@ getProcessor({
   ],
 }).processSync(display);
 let creatCatogry = catalogueList.value;
+console.log(creatCatogry);
 
 // 标题样式改变
 const cateClass = (type) => {
@@ -93,11 +90,11 @@ const cateClass = (type) => {
     return 'dir-content1';
 }
 
-let isActive = shallowRef();
-let heading = ref([]);
-let headerHeight = shallowRef(0);
-let itemOffsetTop = ref([]);
-let liRef = ref([]);
+var isActive = shallowRef();
+var heading = ref([]);
+var headerHeight = shallowRef(0);
+var itemOffsetTop = ref([]);
+var liRef = ref([]);
 const navRef = ref()
 const navMid = shallowRef(0)
 const currentScrollTop = shallowRef(0)
@@ -105,7 +102,7 @@ const currentScrollTop = shallowRef(0)
 // 赋值属性唯一ID
 const transformToId = () => {
   const articleDom = document.getElementById('markdown-body');
-  // console.log(articleDom);
+  console.log(articleDom);
     const children = Array.from(articleDom.children);
     if (children.length > 0) {
       let index = 0;
@@ -113,7 +110,7 @@ const transformToId = () => {
         const tagName = children[i].tagName;
         if (tagName === 'H1' || tagName === 'H2' || tagName === 'H3') {
           children[i].setAttribute('data-id', `heading-${index}`);
-          // console.log(children[i],index)
+          console.log(children[i],index)
           index++;
         }
       }
@@ -155,18 +152,18 @@ const getInitByScroll = () => {
 // 实现滚动事件监听
 const onScroll = () => {
     currentScrollTop.value = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
-    // console.log(currentScrollTop.value)
+    console.log(currentScrollTop.value)
     const scrollTop = currentScrollTop.value - headerHeight.value + 20;
     const itemOffsetTopLength = itemOffsetTop.value.length
     // console.log(scrollTop,itemOffsetTopLength)
     for (let n = 0; n < itemOffsetTopLength; n++) {
         if (scrollTop >= itemOffsetTop.value[n].top - headerHeight.value)
         isActive.value = itemOffsetTop.value[n].key
-        // console.log(isActive.value)
+        console.log(isActive.value)
     }
     if (isActive.value) {
         const activeEleTop = liRef.value[isActive.value].offsetTop;
-        // console.log(navMid.value , activeEleTop)
+        console.log(navMid.value , activeEleTop)
         navMid.value > activeEleTop ? navRef.value.scrollTo({
             top: 0,
         }): navRef.value.scrollTo({
@@ -184,6 +181,9 @@ onMounted(() => {
 }
 );
 
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+})
 </script>
 
 <template>
@@ -234,18 +234,10 @@ onMounted(() => {
                 </div>
                 <div class="body-bottom">
                     <div class="bottom-tab">
-                        <div class="read">
-                            <div class="read-main">
-                                分类:
-                            </div>
-                            <el-button>阅读</el-button>
-                        </div>
-                        <div class="lab">
-                            <div class="lab-main">
-                                标签:
-                            </div>
-                            <el-button type="primary" plain>青训营</el-button>
-                        </div>
+                        底部Tab
+                    </div>
+                    <div class="bottom-info">
+                        插件
                     </div>
                 </div>    
             </div>
@@ -281,18 +273,18 @@ onMounted(() => {
                 </div>
             </div>
             <div class="ads">
-                <img :src="adSrc" width="300" height="90"/>
+                <img src="https://lf3-cdn-tos.bytescm.com/obj/static/xitu_juejin_web/img/sign-in.d6891e5.png" width="300" height="90"/>
             </div>
             <div class="other">
                 <div class="tittle">
                     相关文章
                 </div>
-                <div class="relation" v-for="(item,index) in aboutArr" :key="index">
+                <div class="relation">
                     <div class="rel-tittle">
-                        {{ item.tittle }}
+                        ✍🏻 技术视角深入ChatGPT ｜ 技术专题20期
                     </div>
                     <div class="rel-data">
-                        {{item.good}}点赞&nbsp; · &nbsp;{{item.discuss}}评论
+                        37点赞&nbsp; · &nbsp;28评论
                     </div>
                 </div>
                 <div class="relation">
@@ -325,4 +317,285 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/article.scss";
+.main{
+    background-color: #f4f5f5;
+    height: auto;
+    padding: 0 0 0 196px;
+}
+h1{
+    margin-top: 0px;
+}
+.body{
+    width: 1140px;
+    padding-top: 20px;
+    display: flex;
+    .content{
+      background-color: white;
+      width: 756px;
+      height: auto;
+      padding: 32px 32px 0 32px;
+      border-radius: 5px;
+      .content-author{
+        width: 755px;
+        height: 48px;
+        margin-bottom: 20px;
+        display: flex;
+        &:hover{
+            cursor: pointer;
+        }
+        .author-Img{
+            .headImg{
+                height: 44px;
+                width: 44px;
+                border-radius: 50%;
+            }
+        }
+        .author-in{
+            height: 50px;
+            width: 703px;
+            margin-left: 15px;
+            .name{
+                width: 703px;
+                height: 24px;
+                color: #252933;
+            }
+            .ident{
+                height: 22px;
+                width: 703px;
+                color: #8a919f;
+                font-size: 14px;
+            }
+        }
+      }
+    }
+}
+.body-bottom{
+    width: 756px;
+    height: 126px;
+    padding-top: 10px;
+    padding-bottom: 40px;
+    .bottom-tab{
+        height: 43px;
+    }
+    .bottom-info{
+        width: 724px;
+        height: 54px;
+        padding: 0 16px 0 16px;
+        margin-top: 40px;
+    }
+}
+.author{
+    background-color: white;
+        margin-left: 20px;
+        width: 260px;
+        height: 187px;
+        padding: 20px;
+        margin-bottom: 20px;
+    .info{
+            width: 260px;
+            height: 50px;
+            padding-bottom: 17px;
+            display: flex;
+            &:hover{
+                cursor: pointer;
+            }
+            .infoImg{
+            .headImg{
+                height: 48px;
+                width: 48px;
+                border-radius: 50%;
+            }
+        }
+        .info-in{
+            height: 50px;
+            width: 196px;
+            margin-left: 15px;
+            .name{
+                width: 196px;
+                height: 24px;
+                color: #252933;
+            }
+            .ident{
+                height: 22px;
+                width: 196px;
+                color: #8a919f;
+                font-size: 14px;
+            }
+        }
+    }
+    .info-btn{
+        height: 36px;
+        width: 260px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        // border-bottom: 1px solid #f1f1f1;
+        button{
+            width: 122px;
+            height: 35px;
+        }
+    }
+    .info-good{
+        display: flex;
+        height: 25px;
+        font-size: 14px;
+        padding-top: 8px;
+        border-top: 1px solid #f1f1f1;
+        svg{
+            margin-right: 10px;
+        }
+        span{
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+    }
+    .info-see{
+        display: flex;
+        height: 25px;
+        font-size: 14px;
+        padding-top: 8px;
+        svg{
+            margin-right: 10px;
+        }
+        span{
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+    }
+}
+.ads{
+    margin-left: 20px;
+    width: 300px;
+    height: 90px;
+    margin-bottom: 20px;
+    &:hover{
+        cursor: pointer;
+        color: #1e80ff;
+    }
+}
+.other{
+    background-color: white;
+        margin-left: 20px;
+        width: 260px;
+        height: auto;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    .tittle{
+        width: 260px;
+        height: 24px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .relation{
+        height: 70px;
+        width: 260px;
+        padding: 8px 0 8px 0;
+        .rel-tittle{
+            height: auto;
+            width: 260px;
+            font-size: 14px;
+            &:hover{
+                cursor: pointer;
+                color: #1e80ff;
+            }
+        } 
+        .rel-data{
+            font-size: 14px;
+            color: #8a919f;
+            &:hover{
+                cursor: pointer;
+            }
+        }  
+    }
+}
+.dir{
+    background-color: white;
+        margin-left: 20px;
+        width: 260px;
+        height: auto;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        position: sticky;
+        top: 20px;
+    .tittle{
+        width: 260px;
+        height: 24px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .el-divider{
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    .dir-content1{
+        width: 256px;
+        height: 21px;
+        padding: 8px;
+        font-size: 14px;
+        &:hover{
+            cursor: pointer;
+            background-color: #f4f5f3b5;
+        }    
+    }
+    .active{
+        color: #1e80ff;
+    }
+    .dir-content2{
+        width: 256px;
+        height: 21px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-right: 8px;
+        padding-left: 18px; 
+        font-size: 14px;
+        &:hover{
+            cursor: pointer;
+            background-color: #f4f5f3b5;
+        }
+    }
+    .dir-content3{
+        width: 256px;
+        height: 21px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-right: 8px;
+        padding-left: 28px;
+        font-size: 14px;
+        &:hover{
+            cursor: pointer;
+            background-color: #f4f5f3b5;
+        }
+    }
+    
+}
+.aside-btns{
+    position: fixed;
+    left: 112px;
+    top: 140px;
+    height: 429px;
+    width: 48px;
+    .btn-good{
+        width: 48px;
+        height: 48px;
+        background-color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        &:hover{
+            cursor: pointer;
+        }
+        svg{
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+
+}
 </style>

@@ -8,7 +8,6 @@ export default defineEventHandler(async () => {
         attributes{
           tittle,
           content,
-          isPublic,
           createdAt,
           good,
           discuss,
@@ -52,7 +51,6 @@ export default defineEventHandler(async () => {
           img{
             data{
               attributes{
-                name,
                 url
               }
             }
