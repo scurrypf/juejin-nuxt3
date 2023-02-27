@@ -12,6 +12,7 @@ export default defineEventHandler(async () => {
           good,
           discuss,
           see,
+          summary,
           tags{
             data{
               attributes{
