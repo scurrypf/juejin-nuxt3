@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "5.13.1",
+    "@vueuse/nuxt": "^9.13.0",
     "element-plus": "^2.2.31",
     "graphql": "^16.6.0",
     "unist-util-visit": "^4.1.2"

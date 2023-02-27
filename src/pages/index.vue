@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted , nextTick} from 'vue'
+import {onMounted , nextTick ,ref} from 'vue'
 
 const computeTime = function(createdAt){
   const created = new Date(createdAt);
@@ -29,16 +29,6 @@ const computeTime = function(createdAt){
 
 const article = await useFetch('/api/article');
 const {data:articleArr} = await useFetch('/api/articles')
-// console.log(articleArr)
-const articles = ref([]);
-articles = articleArr.value.data;
-// console.log(articles)
-articles.forEach((ele)=>{
-  ele.createdAt = computeTime(ele.createdAt);
-  console.log(ele.createdAt)
-  ele.img.url = `http://localhost:1337${ele.img.url}`
-})
-// console.log(articles)
 
 const display = article.data.value.summary;
 const tittle = article.data.value.tittle;
@@ -50,8 +40,137 @@ const see = article.data.value.see;
 const authorName = article.data.value.author.name;
 const tagArr = article.data.value.tags.data;
 
-
 const time = computeTime(creatAt);
+
+// console.log(articleArr)
+let articles1 = ref([]);
+articles1.value = articleArr.value.data;
+let articles = articles1.value;
+console.log(articles)
+articles1.value.forEach((ele)=>{
+  ele.img.url = `http://localhost:1337${ele.img.url}`
+})
+// console.log(articles)
+
+let page = ref(1)
+let allList = ref([])  //存放文章列表数据的数组
+let itemHeight = ref(129) 
+let showNum = ref(0) 
+let start = ref(0);
+let canScroll = ref(true)
+let scrollBar = ref();
+let list = ref();
+let isRequest = ref(false);
+let lower = ref(150)
+let scrollTop = ref(0)
+let articleArr1 = ref([]);
+let data = ref([])
+
+// async function getData() {
+//   isRequest = true  // 正在请求中
+//   data.value = await useFetch('/api/page')
+//   console.log(data.value.data)
+//   articleArr1.value = data.value.data;
+//   console.log(articleArr1.value);
+//   articleArr1.value.forEach((ele)=>{
+//     ele.img.url = `http://localhost:1337${ele.img.url}`
+//   })
+//   allList.value = [...allList.value, ...articleArr1.value];
+//   isRequest = false;
+// }
+
+
+// function canShowNum() {
+//     // ~~ 按位两次取反，得到整数
+//     showNum = ~~(scrollBar.value.offsetHeight / itemHeight) + 2;
+// }
+
+// function handleScroll(e) {
+//       if (canScroll) {
+//         canScroll = false
+//         // 处理数据
+//         handleData(e)
+//         // 节流
+//         let timer = setTimeout(() => {
+//           canScroll = true
+//           clearTimeout(timer)
+//           timer = null
+//         }, 30)
+//       }
+//   }
+
+// function handleData(e) {
+//       // 记录当前元素滚动的高度
+//       scrollTop = e.target.scrollTop
+//       // 可见区域第一个元素的index
+//       const curIndex = ~~(e.target.scrollTop / itemHeight)
+//       // 渲染区域第一个元素的index，这里缓冲区域的列表条数使用的是this.showNum
+//       start = curIndex < showNum ? 0 : curIndex - showNum
+//       // 滚动距离底部，还有this.lower距离时，触发触底事件，正在请求中不发送数据
+//       if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - lower && !isRequest) {
+//         getData()
+//       }
+//     }
+
+
+// const endIndex = computed({
+//   get(){
+//     // let end = start + showNum * 3; // 3倍是需要预留缓冲区域
+//     return start + showNum * 3 >= allList.length ? allList.length : start + showNum * 3;  // 结束元素大于所有元素的长度时，就取元素长度
+//   }
+// })
+
+// const showList = computed({
+//   get(){
+//     return allList.value.slice(start, endIndex)
+//   }
+// })
+
+// const paddingStyle = computed({
+//   get(){
+//     return {
+//         paddingTop: start * itemHeight + 'px',
+//         paddingBottom: (allList.length - endIndex) * itemHeight + 'px'
+//     }
+//   }
+// })
+
+
+
+// getData();
+// onMounted(()=>{
+  
+//   canShowNum();  // 获取可见区域能展示多少条数据
+//   window.onresize = canShowNum();  // 监听窗口变化，需要重新计算一屏能展示多少条数据
+//   window.onorientationchange = canShowNum();  // 监听窗口翻转
+//   window.addEventListener('scroll', handleScroll)
+//   nextTick(()=>{
+//       // 定位到之前的高度
+//       scrollBar.value.scrollTop = scrollTop;
+//     })
+// })
+
+const route = useRoute()
+let pagenum = 1
+const { data: artlist} = await useFetch('/api/page?pageNum=1')
+console.log(artlist)
+const addArtListItem = useThrottle(async () => {
+  if (useScrollBottom() && artlist.value != null) {
+    const { data } = await useFetch(`/api/page?pageNum=${++pagenum}`)
+    if (!data.value)
+      return
+    artlist.value.push(...data.value)
+  }
+})
+watch(route, () => {
+  pagenum = 1
+}, { immediate: true, deep: true })
+onMounted(() => {
+  window.addEventListener('scroll', addArtListItem)
+})
+onUnmounted(() => {
+  window.removeEventListener('scroll', addArtListItem)
+})
 
 useHead({
   title:'掘金',
@@ -80,12 +199,13 @@ useHead({
       </div>
       <div class="body"> 
         <div class="main">
-          <div class="content">
+          <div class="content" ref="scrollBar">
             <div class="content-nav">
               <div>推荐</div>
               <div>最新</div>
               <div style="border-right: none;">热榜</div>
             </div>
+            <div ref="list" :style="paddingStyle">
             <div class="content-body">
               <div class="list-tab">
                 <span class="tad-write">{{authorName}} | {{time}}<span v-for="(item,index) in tagArr" :key="index">| {{ item.tittle }}</span> </span>
@@ -119,9 +239,9 @@ useHead({
                 </router-link>
               </div>
             </div>
-            <div class="content-body" v-for="(item,index) in articles" :key="index">
+            <div class="content-body" v-for="(item,index) in articles1" :key="index">
               <div class="list-tab">
-                <span class="tad-write">{{item.author.name}} | {{item.createdAt}}  <span v-for="(item,index) in item.tags.data" :key="index">| {{ item.tittle }}</span></span>
+                <span class="tad-write">{{item.author.name}} | {{computeTime(item.createdAt)}}  <span v-for="(item,index) in item.tags.data" :key="index">| {{ item.tittle }}</span></span>
               </div>
               <div class="main-content">
                 <!--TODO:文章列表-->
@@ -152,9 +272,9 @@ useHead({
                 </router-link>
               </div>
             </div>
-            <div class="content-body" v-for="(item,index) in articles" :key="index">
+            <div class="content-body" v-for="(item,index) in showList" :key="index">
               <div class="list-tab">
-                <span class="tad-write">{{item.author.name}} | {{item.createdAt}}  <span v-for="(item,index) in item.tags.data" :key="index">| {{ item.tittle }}</span></span>
+                <span class="tad-write">{{item.author.name}} | {{computeTime(item.createdAt)}}  <span v-for="(item,index) in item.tags.data" :key="index">| {{ item.tittle }}</span></span>
               </div>
               <div class="main-content">
                 <!--TODO:文章列表-->
@@ -185,6 +305,8 @@ useHead({
                 </router-link>
               </div>
             </div>
+            </div>
+
           </div>
           <div class="tips">
             <div class="tip-first">
@@ -257,6 +379,7 @@ useHead({
       background-color: white;
       width: 700px;
       height: auto;
+      //overflow-y: auto;
       .content-nav{
         height: 15px;
         padding: 15px 12px 15px 12px;
@@ -274,12 +397,7 @@ useHead({
           }
         }
       }
-      .content-body{
-        width: 660px;
-        height: 129px;
-        margin: 12px 20px 0px 20px;
-        border-bottom: 1px solid #f4f5f5;
-      }
+      
     }
     // .tips{
       // background-color: white;
@@ -350,6 +468,12 @@ useHead({
         }
       }
     }
+    .content-body{
+        width: 660px;
+        height: 129px;
+        margin: 12px 20px 0px 20px;
+        border-bottom: 1px solid #f4f5f5;
+      }
 .main-content{
   color: black;
   width: 660px;
