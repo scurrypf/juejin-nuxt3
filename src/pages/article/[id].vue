@@ -20,11 +20,11 @@ const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji
 
 const route = useRoute()
 const url = ref(`/api/${route.params.id}`)
-console.log(url.value)
+// console.log(url.value)
 const article = await useFetch(url);
 const ad = await useFetch('/api/ad');
 const about = await useFetch('/api/aboutArt');
-console.log(article)
+// console.log(article)
 
 const aboutArr = about.data.value.data[0].articles.data;
 const adSrc = `http://localhost:1337${ad.data.value.adimg.url}`
@@ -305,14 +305,6 @@ onMounted(() => {
                         {{item.good}}点赞&nbsp; · &nbsp;{{item.discuss}}评论
                     </div>
                 </div>
-                <div class="relation">
-                    <div class="rel-tittle">
-                        霖呆呆的近期面试128题汇总(含超详细答案) | 掘金技术征文
-                    </div>
-                    <div class="rel-data">
-                        3035点赞&nbsp; · &nbsp;256评论
-                    </div>
-                </div>
             </div>
             <div class="dir">
                 <div class="dir-tittle">
@@ -321,8 +313,8 @@ onMounted(() => {
                 <el-divider />
                 <!--TODO:目录生成-->
                 <div ref="navRef">
-                <div v-for="(item,index) in creatCatogry" ref="liRef" :key="index" :class="[{ active: index === isActive }, cateClass(item.level)]" @click="activeSelect(index)" >
-                    <NuxtLink>
+                <div v-for="(item,index) in creatCatogry" ref="liRef" :key="index" :class="[{ active: index === isActive }, cateClass(item.level)]" @click="activeSelect(index)">
+                    <NuxtLink class="dir">
                     {{item.text}}
                     </NuxtLink>
                 </div>

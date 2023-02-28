@@ -1,5 +1,8 @@
+@import "@/assets/scss/styles/mixin.scss";
+@import "@/assets/scss/styles/variable.scss";
+
 .main{
-    background-color: #f4f5f5;
+    @include bg_color();
     height: auto;
     padding: 0 0 0 196px;
 }
@@ -11,11 +14,16 @@ h1{
     padding-top: 20px;
     display: flex;
     .content{
-      background-color: white;
+      @include nav_bg_color();
       width: 756px;
       height: auto;
       padding: 32px 32px 0 32px;
       border-radius: 5px;
+      @include tittle_font_color();
+      .markdown-body{
+        @include tittle_font_color();
+        @include nav_bg_color();
+      }
       .content-author{
         width: 755px;
         height: 48px;
@@ -38,7 +46,7 @@ h1{
             .name{
                 width: 703px;
                 height: 24px;
-                color: #252933;
+                @include tittle_font_color();
             }
             .ident{
                 height: 22px;
@@ -93,7 +101,7 @@ h1{
     }
 }
 .author{
-    background-color: white;
+    @include nav_bg_color();
         margin-left: 20px;
         width: 260px;
         height: 187px;
@@ -103,6 +111,7 @@ h1{
             width: 260px;
             height: 50px;
             padding-bottom: 17px;
+            
             display: flex;
             &:hover{
                 cursor: pointer;
@@ -121,7 +130,7 @@ h1{
             .name{
                 width: 196px;
                 height: 24px;
-                color: #252933;
+                @include tittle_font_color();
             }
             .ident{
                 height: 22px;
@@ -148,7 +157,7 @@ h1{
         height: 25px;
         font-size: 14px;
         padding-top: 8px;
-        border-top: 1px solid #f1f1f1;
+        border-top: 1px solid #f1f1f193;
         svg{
             margin-right: 10px;
         }
@@ -156,6 +165,7 @@ h1{
             display: flex;
             align-items: center;
             margin-right: 10px;
+            @include tittle_font_color();
         }
     }
     .info-see{
@@ -170,6 +180,7 @@ h1{
             display: flex;
             align-items: center;
             margin-right: 10px;
+            @include tittle_font_color();
         }
     }
 }
@@ -184,7 +195,7 @@ h1{
     }
 }
 .other{
-    background-color: white;
+    @include nav_bg_color();
         margin-left: 20px;
         width: 260px;
         height: auto;
@@ -196,6 +207,7 @@ h1{
         height: 24px;
         padding-bottom: 15px;
         border-bottom: 1px solid #f1f1f1;
+        @include tittle_font_color()
     }
     .relation{
         height: auto;
@@ -205,6 +217,7 @@ h1{
             height: auto;
             width: 260px;
             font-size: 14px;
+            @include tittle_font_color();
             &:hover{
                 cursor: pointer;
                 color: #1e80ff;
@@ -220,7 +233,7 @@ h1{
     }
 }
 .dir{
-    background-color: white;
+    @include nav_bg_color();
         margin-left: 20px;
         width: 260px;
         height: auto;
@@ -233,11 +246,14 @@ h1{
         width: 260px;
         height: 24px;
         padding-bottom: 15px;
-        border-bottom: 1px solid #f1f1f1;
+        border-bottom: 1px solid #f1f1f1b0;
     }
     .el-divider{
         margin-top: 20px;
         margin-bottom: 10px;
+    }
+    .dir-tittle{
+        @include tittle_font_color();
     }
     .dir-content1{
         width: 256px;
@@ -250,7 +266,7 @@ h1{
         }    
     }
     .active{
-        color: #1e80ff;
+        @include dir_font_color();
     }
     .dir-content2{
         width: 256px;
@@ -289,7 +305,7 @@ h1{
     .btn-good{
         width: 48px;
         height: 48px;
-        background-color: white;
+        @include nav_bg_color();
         border-radius: 50%;
         display: flex;
         justify-content: center;

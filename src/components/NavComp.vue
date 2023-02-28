@@ -2,16 +2,14 @@
     <div ref="totop" class="totop">
         <div class="nav-top" ref="top">
         <img src="https://lf3-cdn-tos.bytescm.com/obj/static/xitu_juejin_web/e08da34488b114bd4c665ba2fa520a31.svg" class="logo">
+        <!-- <div>
+          <svg viewBox="0 0 36 28" xmlns="http://www.w3.org/2000/svg" class="fill-nav_icon_color h-full"><path d="M17.5865 17.3955H17.5902L28.5163 8.77432L25.5528 6.39453L17.5902 12.6808H17.5865L17.5828 12.6845L9.62018 6.40201L6.6604 8.78181L17.5828 17.3992L17.5865 17.3955Z"></path><path d="M17.5872 6.77268L21.823 3.40505L17.5872 0.00748237L17.5835 0L13.3552 3.39757L17.5835 6.76894L17.5872 6.77268Z"></path><path d="M17.5865 23.2854L17.5828 23.2891L2.95977 11.7531L0 14.1291L0.284376 14.3574L17.5865 28L28.5238 19.3752L35.1768 14.1254L32.2133 11.7456L17.5865 23.2854Z"></path></svg>
+        
+        </div> -->
         <div class="head">
           <!--TODO:首页跳转-->
-          <div>首页</div>
-          <!-- <a to="/" class="nav-btn">首页</a>
-          <NuxtLink to="/" class="nav-btn">沸点</NuxtLink>
-          <NuxtLink to="/" class="nav-btn">课程</NuxtLink>
+          <!-- <div>首页</div>-->
           <NuxtLink to="/" class="nav-btn">首页</NuxtLink>
-          <NuxtLink to="/" class="nav-btn">首页</NuxtLink>
-          <NuxtLink to="/" class="nav-btn">首页</NuxtLink>
-          <NuxtLink to="/" class="nav-btn">首页</NuxtLink> -->
           <div>沸点</div>
           <div>课程</div>
           <div>直播</div>
@@ -65,7 +63,7 @@
             <img class="headImg" src="../assets/img/headImg.jpg" />
           </div> 
       </div>
-      <div class="toTop">
+      <div class="toTop" @click="changeTheme">
         <i>
           <svg data-v-0b2d23d8="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
             class="icon-feedback">
@@ -104,10 +102,22 @@ function Totop(){
 
 function setButton(){
   // console.log(document.documentElement.scrollTop)
-  if(document.documentElement.scrollTop > 100){
+  if(document.documentElement.scrollTop > 350){
     hasButton.value = true;
   }else{
     hasButton.value = false;
+  }
+}
+let isTheme = true;
+
+function changeTheme () {
+  if(isTheme){
+    document.documentElement.setAttribute('data-theme', 'theme1')
+    isTheme = false;
+    return;
+  }else{
+    document.documentElement.setAttribute('data-theme', 'theme2')
+    isTheme = true;
   }
 }
 
@@ -118,5 +128,7 @@ onMounted(()=>{
 </script>
 <style lang="scss" scoped>
 @import "@/assets/scss/nav.scss";
+@import "@/assets/scss/styles/mixin.scss";
+@import "@/assets/scss/styles/variable.scss";
 
 </style>

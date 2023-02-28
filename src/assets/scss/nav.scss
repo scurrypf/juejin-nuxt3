@@ -1,10 +1,12 @@
 // @use "element-plus/dist/index.css";
+@import "@/assets/scss/styles/mixin.scss";
+@import "@/assets/scss/styles/variable.scss";
 
 .nav-top{
     height: 60px;
     width: 100%;
-    background-color: white;
-    border-bottom: 1px solid #f1f1f1;
+    @include nav_bg_color();
+    border-bottom: 1px solid #f1f1f132;
     position: relative;
     .head{
       width: 468px;
@@ -16,7 +18,7 @@
         width: 51px;
         height: 60px;
         font-size: 14px;
-        color: #5e6d82;
+        @include nav_font_color();
         display: flex;
         justify-content: center;
         align-items: center;
@@ -126,7 +128,7 @@
     width: 51px;
     height: 60px;
     font-size: 14px;
-    color: #5e6d82;
+    @include nav_font_color();
     display: flex;
     justify-content: center;
     align-items: center;

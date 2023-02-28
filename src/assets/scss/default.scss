@@ -1,8 +1,8 @@
+@import "@/assets/scss/styles/mixin.scss";
+@import "@/assets/scss/styles/variable.scss";
+
 html,body{
     margin: 0px;
     padding: 0px;
-    background-color: #f4f5f5;
-}
-html{
-  height: 100%;
+    @include bg_color();
 }

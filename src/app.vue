@@ -1,7 +1,7 @@
 <template>
   <div>
     <NavComp />
-    <NuxtPage></NuxtPage>
+    <NuxtPage></NuxtPage>  
   </div>
 </template>
 
