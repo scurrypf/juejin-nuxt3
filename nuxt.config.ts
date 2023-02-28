@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     // }],
     modules: [
         '@element-plus/nuxt',
-        '@vueuse/nuxt',
       ],
     elementPlus: { /** Options */ },
     css: ['element-plus/dist/index.css'],

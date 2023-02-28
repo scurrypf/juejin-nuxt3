@@ -1,11 +1,10 @@
 import { useGraphql } from '../../utils/useGraph'
 
 export default defineEventHandler(async (event) => {
-  let pages = getQuery(event).pagenum;
+  let n = event.context.params.id;
   const reqQuery = `query {
-    articles(pagination: { page: ${pages}, pageSize: 2 }){
+    article(id:${n}){
       data{
-        id,
         attributes{
           tittle,
           content,
@@ -53,9 +52,7 @@ export default defineEventHandler(async (event) => {
           img{
             data{
               attributes{
-                url,
-                previewUrl,
-                hash
+                url
               }
             }
           }
@@ -63,5 +60,5 @@ export default defineEventHandler(async (event) => {
       }
     }
   }`
-  return (await useGraphql(reqQuery)).articles.data;
+  return (await useGraphql(reqQuery)).article;
 })

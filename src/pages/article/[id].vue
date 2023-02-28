@@ -8,17 +8,26 @@ import math from '@bytemd/plugin-math-ssr'
 import medium from '@bytemd/plugin-medium-zoom'
 import mermaid from '@bytemd/plugin-mermaid'
 import frontmatter from '@bytemd/plugin-frontmatter'
-import themeStyle from '../utils/theme'
-import highlightStyle from '../utils/highLight'
+import themeStyle from '../../utils/theme'
+import highlightStyle from '../../utils/highLight'
 import { getProcessor } from 'bytemd'
 import { visit } from 'unist-util-visit'
-import { onMounted, onUnmounted, ref, nextTick } from 'vue'
+import { onMounted, onUnmounted, ref, nextTick} from 'vue'
 
 // 渲染文章
 const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji(), gfm(), highlight(), math(), 
                  medium({ background: 'rgba(0, 0, 0, 0.7)' }), mermaid()]
-const article = await useFetch('/api/article');
 
+const route = useRoute()
+const url = ref(`/api/${route.params.id}`)
+console.log(url.value)
+const article = await useFetch(url);
+const ad = await useFetch('/api/ad');
+const about = await useFetch('/api/aboutArt');
+console.log(article)
+
+const aboutArr = about.data.value.data[0].articles.data;
+const adSrc = `http://localhost:1337${ad.data.value.adimg.url}`
 const display = article.data.value.content;
 const src = `http://localhost:1337${article.data.value.img.url}`
 const good = article.data.value.good;
@@ -80,7 +89,6 @@ getProcessor({
   ],
 }).processSync(display);
 let creatCatogry = catalogueList.value;
-console.log(creatCatogry);
 
 // 标题样式改变
 const cateClass = (type) => {
@@ -90,11 +98,11 @@ const cateClass = (type) => {
     return 'dir-content1';
 }
 
-var isActive = shallowRef();
-var heading = ref([]);
-var headerHeight = shallowRef(0);
-var itemOffsetTop = ref([]);
-var liRef = ref([]);
+let isActive = shallowRef();
+let heading = ref([]);
+let headerHeight = shallowRef(0);
+let itemOffsetTop = ref([]);
+let liRef = ref([]);
 const navRef = ref()
 const navMid = shallowRef(0)
 const currentScrollTop = shallowRef(0)
@@ -102,7 +110,7 @@ const currentScrollTop = shallowRef(0)
 // 赋值属性唯一ID
 const transformToId = () => {
   const articleDom = document.getElementById('markdown-body');
-  console.log(articleDom);
+  // console.log(articleDom);
     const children = Array.from(articleDom.children);
     if (children.length > 0) {
       let index = 0;
@@ -110,12 +118,17 @@ const transformToId = () => {
         const tagName = children[i].tagName;
         if (tagName === 'H1' || tagName === 'H2' || tagName === 'H3') {
           children[i].setAttribute('data-id', `heading-${index}`);
-          console.log(children[i],index)
+          // console.log(children[i],index)
           index++;
         }
       }
     }
 }
+
+const isRender = useState('isRender', () => false)
+onMounted(() => {
+  isRender.value = true
+})
 
 onMounted(()=>{
     transformToId()
@@ -152,18 +165,18 @@ const getInitByScroll = () => {
 // 实现滚动事件监听
 const onScroll = () => {
     currentScrollTop.value = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
-    console.log(currentScrollTop.value)
+    // console.log(currentScrollTop.value)
     const scrollTop = currentScrollTop.value - headerHeight.value + 20;
     const itemOffsetTopLength = itemOffsetTop.value.length
     // console.log(scrollTop,itemOffsetTopLength)
     for (let n = 0; n < itemOffsetTopLength; n++) {
         if (scrollTop >= itemOffsetTop.value[n].top - headerHeight.value)
         isActive.value = itemOffsetTop.value[n].key
-        console.log(isActive.value)
+        // console.log(isActive.value)
     }
     if (isActive.value) {
         const activeEleTop = liRef.value[isActive.value].offsetTop;
-        console.log(navMid.value , activeEleTop)
+        // console.log(navMid.value , activeEleTop)
         navMid.value > activeEleTop ? navRef.value.scrollTo({
             top: 0,
         }): navRef.value.scrollTo({
@@ -181,9 +194,6 @@ onMounted(() => {
 }
 );
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-})
 </script>
 
 <template>
@@ -209,8 +219,8 @@ onUnmounted(() => {
                 <svg t="1677244441390" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="18825" id="mx_n_1677244441392" width="17" height="17"><path d="M927.744 480.256H96.256c-17.408 0-31.744 14.336-31.744 31.744 0 17.408 14.336 31.744 31.744 31.744h831.488c17.408 0 32.256-14.336 32.256-31.744-0.512-17.408-14.848-31.744-32.256-31.744zM894.464 639.488c-17.408 0-32.256 14.336-32.256 31.744v159.232c0 17.408-14.336 31.744-32.256 31.744h-192c-17.408 0-32.256 14.336-32.256 31.744 0 17.408 14.336 31.744 32.256 31.744h192c52.736 0 95.744-43.008 95.744-95.744V670.72c0.512-16.896-13.824-31.232-31.232-31.232zM350.72 862.208H190.976c-17.408 0-32.256-14.336-32.256-31.744v-159.232c0-17.408-14.336-31.744-32.256-31.744s-32.256 14.336-32.256 31.744v159.232c0 52.736 43.008 95.744 95.744 95.744h159.744c17.408 0 32.256-14.336 32.256-31.744 1.024-17.92-13.312-32.256-31.232-32.256zM126.976 384.512c17.408 0 32.256-14.336 32.256-31.744V193.536c0-17.408 14.336-31.744 32.256-31.744h159.744c17.408 0 32.256-14.336 32.256-31.744 0-17.408-14.336-31.744-32.256-31.744H190.976c-52.736 0-95.744 43.008-95.744 95.744V353.28c-0.512 17.408 13.824 31.232 31.744 31.232zM638.464 161.792h192c17.408 0 32.256 14.336 32.256 31.744v159.232c0 17.408 14.336 31.744 32.256 31.744 17.408 0 32.256-14.336 32.256-31.744V193.536c0-52.736-43.008-95.744-95.744-95.744h-192c-17.408 0-32.256 14.336-32.256 31.744-0.512 17.92 13.824 32.256 31.232 32.256z" p-id="18826" fill="#8a919f"></path><path d="M703.488 737.28H320.512c-25.6 0-46.592-20.992-46.592-46.592V333.312c0-25.6 20.992-46.592 46.592-46.592h382.976c25.6 0 46.592 20.992 46.592 46.592v357.376c0 25.6-20.992 46.592-46.592 46.592z" p-id="18827" fill="#8a919f"></path></svg>
             </div>
         </div>
-        <div class="body">
-            <div class="content">
+        <div class="body" v-show="isRender">
+            <div class="content" >
                 <h1>{{ article.data.value.tittle }}</h1>
                 <div class="content-author">
                     <div class="author-Img">
@@ -234,10 +244,18 @@ onUnmounted(() => {
                 </div>
                 <div class="body-bottom">
                     <div class="bottom-tab">
-                        底部Tab
-                    </div>
-                    <div class="bottom-info">
-                        插件
+                        <div class="read">
+                            <div class="read-main">
+                                分类:
+                            </div>
+                            <el-button>阅读</el-button>
+                        </div>
+                        <div class="lab">
+                            <div class="lab-main">
+                                标签:
+                            </div>
+                            <el-button type="primary" plain>青训营</el-button>
+                        </div>
                     </div>
                 </div>    
             </div>
@@ -273,18 +291,18 @@ onUnmounted(() => {
                 </div>
             </div>
             <div class="ads">
-                <img src="https://lf3-cdn-tos.bytescm.com/obj/static/xitu_juejin_web/img/sign-in.d6891e5.png" width="300" height="90"/>
+                <img :src="adSrc" width="300" height="90"/>
             </div>
             <div class="other">
                 <div class="tittle">
                     相关文章
                 </div>
-                <div class="relation">
+                <div class="relation" v-for="(item,index) in aboutArr" :key="index">
                     <div class="rel-tittle">
-                        ✍🏻 技术视角深入ChatGPT ｜ 技术专题20期
+                        {{ item.tittle }}
                     </div>
                     <div class="rel-data">
-                        37点赞&nbsp; · &nbsp;28评论
+                        {{item.good}}点赞&nbsp; · &nbsp;{{item.discuss}}评论
                     </div>
                 </div>
                 <div class="relation">
@@ -317,285 +335,4 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/article.scss";
-.main{
-    background-color: #f4f5f5;
-    height: auto;
-    padding: 0 0 0 196px;
-}
-h1{
-    margin-top: 0px;
-}
-.body{
-    width: 1140px;
-    padding-top: 20px;
-    display: flex;
-    .content{
-      background-color: white;
-      width: 756px;
-      height: auto;
-      padding: 32px 32px 0 32px;
-      border-radius: 5px;
-      .content-author{
-        width: 755px;
-        height: 48px;
-        margin-bottom: 20px;
-        display: flex;
-        &:hover{
-            cursor: pointer;
-        }
-        .author-Img{
-            .headImg{
-                height: 44px;
-                width: 44px;
-                border-radius: 50%;
-            }
-        }
-        .author-in{
-            height: 50px;
-            width: 703px;
-            margin-left: 15px;
-            .name{
-                width: 703px;
-                height: 24px;
-                color: #252933;
-            }
-            .ident{
-                height: 22px;
-                width: 703px;
-                color: #8a919f;
-                font-size: 14px;
-            }
-        }
-      }
-    }
-}
-.body-bottom{
-    width: 756px;
-    height: 126px;
-    padding-top: 10px;
-    padding-bottom: 40px;
-    .bottom-tab{
-        height: 43px;
-    }
-    .bottom-info{
-        width: 724px;
-        height: 54px;
-        padding: 0 16px 0 16px;
-        margin-top: 40px;
-    }
-}
-.author{
-    background-color: white;
-        margin-left: 20px;
-        width: 260px;
-        height: 187px;
-        padding: 20px;
-        margin-bottom: 20px;
-    .info{
-            width: 260px;
-            height: 50px;
-            padding-bottom: 17px;
-            display: flex;
-            &:hover{
-                cursor: pointer;
-            }
-            .infoImg{
-            .headImg{
-                height: 48px;
-                width: 48px;
-                border-radius: 50%;
-            }
-        }
-        .info-in{
-            height: 50px;
-            width: 196px;
-            margin-left: 15px;
-            .name{
-                width: 196px;
-                height: 24px;
-                color: #252933;
-            }
-            .ident{
-                height: 22px;
-                width: 196px;
-                color: #8a919f;
-                font-size: 14px;
-            }
-        }
-    }
-    .info-btn{
-        height: 36px;
-        width: 260px;
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 16px;
-        // border-bottom: 1px solid #f1f1f1;
-        button{
-            width: 122px;
-            height: 35px;
-        }
-    }
-    .info-good{
-        display: flex;
-        height: 25px;
-        font-size: 14px;
-        padding-top: 8px;
-        border-top: 1px solid #f1f1f1;
-        svg{
-            margin-right: 10px;
-        }
-        span{
-            display: flex;
-            align-items: center;
-            margin-right: 10px;
-        }
-    }
-    .info-see{
-        display: flex;
-        height: 25px;
-        font-size: 14px;
-        padding-top: 8px;
-        svg{
-            margin-right: 10px;
-        }
-        span{
-            display: flex;
-            align-items: center;
-            margin-right: 10px;
-        }
-    }
-}
-.ads{
-    margin-left: 20px;
-    width: 300px;
-    height: 90px;
-    margin-bottom: 20px;
-    &:hover{
-        cursor: pointer;
-        color: #1e80ff;
-    }
-}
-.other{
-    background-color: white;
-        margin-left: 20px;
-        width: 260px;
-        height: auto;
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-    .tittle{
-        width: 260px;
-        height: 24px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #f1f1f1;
-    }
-    .relation{
-        height: 70px;
-        width: 260px;
-        padding: 8px 0 8px 0;
-        .rel-tittle{
-            height: auto;
-            width: 260px;
-            font-size: 14px;
-            &:hover{
-                cursor: pointer;
-                color: #1e80ff;
-            }
-        } 
-        .rel-data{
-            font-size: 14px;
-            color: #8a919f;
-            &:hover{
-                cursor: pointer;
-            }
-        }  
-    }
-}
-.dir{
-    background-color: white;
-        margin-left: 20px;
-        width: 260px;
-        height: auto;
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-        position: sticky;
-        top: 20px;
-    .tittle{
-        width: 260px;
-        height: 24px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #f1f1f1;
-    }
-    .el-divider{
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
-    .dir-content1{
-        width: 256px;
-        height: 21px;
-        padding: 8px;
-        font-size: 14px;
-        &:hover{
-            cursor: pointer;
-            background-color: #f4f5f3b5;
-        }    
-    }
-    .active{
-        color: #1e80ff;
-    }
-    .dir-content2{
-        width: 256px;
-        height: 21px;
-        padding-top: 8px;
-        padding-bottom: 8px;
-        padding-right: 8px;
-        padding-left: 18px; 
-        font-size: 14px;
-        &:hover{
-            cursor: pointer;
-            background-color: #f4f5f3b5;
-        }
-    }
-    .dir-content3{
-        width: 256px;
-        height: 21px;
-        padding-top: 8px;
-        padding-bottom: 8px;
-        padding-right: 8px;
-        padding-left: 28px;
-        font-size: 14px;
-        &:hover{
-            cursor: pointer;
-            background-color: #f4f5f3b5;
-        }
-    }
-    
-}
-.aside-btns{
-    position: fixed;
-    left: 112px;
-    top: 140px;
-    height: 429px;
-    width: 48px;
-    .btn-good{
-        width: 48px;
-        height: 48px;
-        background-color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 20px;
-        &:hover{
-            cursor: pointer;
-        }
-        svg{
-            &:hover{
-                cursor: pointer;
-            }
-        }
-    }
-
-}
 </style>
