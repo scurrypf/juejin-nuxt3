@@ -1,6 +1,6 @@
 <template>
-    <div ref="totop">
-        <div class="nav-top">
+    <div ref="totop" class="totop">
+        <div class="nav-top" ref="top">
         <img src="https://lf3-cdn-tos.bytescm.com/obj/static/xitu_juejin_web/e08da34488b114bd4c665ba2fa520a31.svg" class="logo">
         <div class="head">
           <!--TODO:首页跳转-->
@@ -80,7 +80,7 @@
           </svg>
         </i>
         </div>
-        <div class="backtoTop" ref="top" v-if="hasButton">
+        <div class="backtoTop" v-show="hasButton" @click="Totop">
         <i>
           <svg t="1677554544926" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2344" width="16" height="16"><path d="M832 64H192c-17.6 0-32 14.4-32 32s14.4 32 32 32h640c17.6 0 32-14.4 32-32s-14.4-32-32-32zM852.484 519.469L538.592 205.577a30.79 30.79 0 0 0-3.693-4.476c-6.241-6.241-14.556-9.258-22.899-9.09-8.343-0.168-16.658 2.849-22.899 9.09a30.778 30.778 0 0 0-3.693 4.476L171.419 519.566C164.449 525.448 160 534.228 160 544c0 0.058 0.004 0.115 0.004 0.172-0.124 8.285 2.899 16.529 9.096 22.727 6.202 6.202 14.453 9.224 22.743 9.096 0.066 0 0.131 0.005 0.197 0.005H352v320c0 35.2 28.8 64 64 64h192c35.2 0 64-28.8 64-64V576h160c0.058 0 0.115-0.004 0.172-0.004 8.285 0.124 16.529-2.899 22.727-9.096 6.198-6.198 9.22-14.442 9.096-22.727 0-0.058 0.004-0.115 0.004-0.172 0.001-9.826-4.489-18.65-11.515-24.532z" p-id="2345" fill="#707070"></path></svg>
         </i>
@@ -101,17 +101,18 @@ function Totop(){
     behavior: 'smooth'
   });
 }
-function useScrollBottom(){
-  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-  const clientHeight = document.documentElement.clientHeight
-  const scrollHeight = document.documentElement.scrollHeight
-  if (scrollTop + clientHeight + 200 >= scrollHeight)// 还未到底部就先开始请求
-    hasButton = true;
-  hasButton = false;
+
+function setButton(){
+  // console.log(document.documentElement.scrollTop)
+  if(document.documentElement.scrollTop > 100){
+    hasButton.value = true;
+  }else{
+    hasButton.value = false;
+  }
 }
 
 onMounted(()=>{
-  window.addEventListener('scoll',useScrollBottom)
+  window.addEventListener('scroll',setButton)
 })
 
 </script>

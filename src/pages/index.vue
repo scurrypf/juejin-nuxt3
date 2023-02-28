@@ -29,7 +29,6 @@ const computeTime = function(createdAt){
 
 const article = await useFetch('/api/article');
 const {data:articleArr} = await useFetch('/api/articles')
-const {data} = await useFetch('/api/page')
 // console.log(data.value)
 
 const display = article.data.value.summary;
@@ -47,7 +46,6 @@ const time = computeTime(creatAt);
 // console.log(articleArr)
 let articles1 = ref([]);
 articles1.value = articleArr.value.data;
-let articles = articles1.value;
 // console.log(articles)
 articles1.value.forEach((ele)=>{
   ele.img.url = `http://localhost:1337${ele.img.url}`
