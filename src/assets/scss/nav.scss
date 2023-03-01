@@ -80,6 +80,9 @@
       color: #1e80ff;
       font-family: 'Courier New', Courier, monospace;
       font-weight: 400;
+      &:hover{
+        cursor: pointer;
+      }
     }
   }
 .logo{

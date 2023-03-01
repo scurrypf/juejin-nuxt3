@@ -19,14 +19,11 @@ const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji
                  medium({ background: 'rgba(0, 0, 0, 0.7)' }), mermaid()]
 
 const route = useRoute()
-const url = ref(`/api/${route.params.id}`)
+const url = ref(`/api/article/${route.params.id}`)
 // console.log(url.value)
 const article = await useFetch(url);
 const ad = await useFetch('/api/ad');
-const about = await useFetch('/api/aboutArt');
-// console.log(article)
 
-const aboutArr = about.data.value.data[0].articles.data;
 const adSrc = `http://localhost:1337${ad.data.value.adimg.url}`
 const display = article.data.value.content;
 const src = `http://localhost:1337${article.data.value.img.url}`
@@ -34,10 +31,18 @@ const good = article.data.value.good;
 const discuss = article.data.value.discuss;
 const see = article.data.value.see;
 const authorName = article.data.value.author.name;
+const authid = article.data.value.author.id;
 const level = `http://localhost:1337${article.data.value.author.level.url}`;
 const badage = `http://localhost:1337${article.data.value.author.badge.url}`;
 const headImg = `http://localhost:1337${article.data.value.author.headImg.url}`;
 const authorDiscuss = article.data.value.author.discuss;
+
+const abouturl = ref(`/api/aboutArt?authid=${authid}`);
+const about = await useFetch(abouturl);
+console.log(about)
+// console.log(article)
+
+const aboutArr = about.data.value;
 
 // 生成目录
 let catalogueList = ref([]);
@@ -298,12 +303,16 @@ onMounted(() => {
                     相关文章
                 </div>
                 <div class="relation" v-for="(item,index) in aboutArr" :key="index">
-                    <div class="rel-tittle">
-                        {{ item.tittle }}
-                    </div>
-                    <div class="rel-data">
-                        {{item.good}}点赞&nbsp; · &nbsp;{{item.discuss}}评论
-                    </div>
+                        <div class="rel-tittle">
+                            <router-link :to="`/article/${item.id}`" class="rel-tittle" target="_blank">
+                            {{ item.tittle }}
+                            </router-link>
+                        </div>
+                        <div class="rel-data">
+                            <router-link :to="`/article/${item.id}`" class="rel-data" target="_blank">
+                                {{item.good}}点赞&nbsp; · &nbsp;{{item.discuss}}评论
+                            </router-link>
+                        </div>
                 </div>
             </div>
             <div class="dir">

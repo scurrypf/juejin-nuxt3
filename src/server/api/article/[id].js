@@ -1,4 +1,4 @@
-import { useGraphql } from '../../utils/useGraph'
+import { useGraphql } from '../../../utils/useGraph'
 
 export default defineEventHandler(async (event) => {
   let n = event.context.params.id;
@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
           },
           author{
             data{
+              id,
               attributes{
                 name,
                 discuss,

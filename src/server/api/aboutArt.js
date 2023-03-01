@@ -1,30 +1,23 @@
 import { useGraphql } from '../../utils/useGraph'
 
-export default defineEventHandler(async () => {
-  const reqQuery = `query{
-    tags(filters:{
+export default defineEventHandler(async (event) => {
+  let id = getQuery(event).authid;
+  const reqQuery = `query {
+    articles(filters:{
+      author:{
         id:{
-          eq:2
+          eq:${id}
         }
-      }){
+      }
+    }){
       data{
         id,
         attributes{
-          tittle,
-          articles{
-            data{
-              attributes{
-                tittle,
-                good,
-                see,
-                discuss
-              }
-            }
-          }
+          tittle
         }
       }
     }
   }`
-  return (await useGraphql(reqQuery)).tags;
+  return (await useGraphql(reqQuery)).articles.data;
 })
 

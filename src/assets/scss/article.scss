@@ -214,6 +214,7 @@ h1{
         width: 260px;
         padding: 8px 0 8px 0;
         .rel-tittle{
+            text-decoration:none;
             height: auto;
             width: 260px;
             font-size: 14px;
@@ -224,6 +225,7 @@ h1{
             }
         } 
         .rel-data{
+            text-decoration:none;
             font-size: 14px;
             color: #8a919f;
             &:hover{

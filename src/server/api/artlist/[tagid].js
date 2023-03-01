@@ -1,14 +1,15 @@
-import { useGraphql } from '../../utils/useGraph'
+import { useGraphql } from '../../../utils/useGraph'
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
+  const id = event.context.params.tagid;
   const reqQuery = `query {
     articles(filters:{
         tags:{
           id:{
-           eq:3
+           eq:${id}
           } 
         }
-      }{
+      }){
       data{
         id,
         attributes{

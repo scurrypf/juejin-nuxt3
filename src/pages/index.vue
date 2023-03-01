@@ -28,13 +28,12 @@ const computeTime = function(createdAt){
 }
 
 let tag = ref([]);
-const article = await useFetch('/api/article');
+// let seetag = ref([]);
 const {data:articleArr} = await useFetch('/api/articles')
 const tagsArr = await useFetch('/api/tags')
-console.log(tagsArr);
-tag = tagsArr.data.value.data
-console.log(tag)
-// console.log(data.value)
+// const seetagsArr = await useFetch('/api/seetags')
+// seetag = seetagsArr.data.value;
+tag = tagsArr.data.value.data;
 
 let articles1 = ref([]);
 articles1.value = articleArr.value.data;
@@ -71,7 +70,8 @@ function useScrollBottom(){
 
 const addArtListItem = Throttle(async () => {
   if (useScrollBottom() && articles1.value != null) {
-    const { data } = await useFetch(`/api/page?pagenum=${pagenum++}`)
+    if(pagenum > 4)pagenum = 1;
+    const { data } = await useFetch(`/api/page?pagenum=${pagenum++}&tag=${tagid.value || 2}`)
     if (!data.value)return;
     data.value.forEach((ele)=>{
       ele.img.url = `http://localhost:1337${ele.img.url}`
@@ -80,26 +80,32 @@ const addArtListItem = Throttle(async () => {
   }
 })
 
-async function chageArticle(str){
+let tagid = ref(2);
+
+async function changeArticle(str){
   const url = ref(`/api/${str}`);
-  console.log(url)
   let {data} = await useFetch(url);
-  console.log(data)
   articles1.value = data.value.data;
   articles1.value.forEach((ele)=>{
     ele.img.url = `http://localhost:1337${ele.img.url}`
   })
 }
 
-async function chageTagArticle(str){
-  const url = ref(`/api/${str}`);
-  console.log(url)
+async function changeTagArticle(id){
+  const url = ref(`/api/artlist/${id}`);
+  tagid.value = id;
   let {data} = await useFetch(url);
-  console.log(data)
   articles1.value = data.value.data;
   articles1.value.forEach((ele)=>{
     ele.img.url = `http://localhost:1337${ele.img.url}`
   })
+}
+
+let isActive = shallowRef(0);
+function tonum(index){
+  console.log(index)
+  isActive.value = index;
+  console.log(isActive.value)
 }
 
 watch(route, () => {
@@ -123,25 +129,18 @@ useHead({
     <div class="container">
       <div class="nav-bottom">
             <div class="Tab">
-            <div v-for="(item,index) in tag" :key="index">{{ item.tittle }}</div>
-            <!-- <div>综合</div>
-            <div>后端</div>
-            <div>前端</div>
-            <div>Android</div>
-            <div>IOS</div>
-            <div>人工智能</div>
-            <div>开发工具</div>
-            <div>代码人生</div>
-            <div>阅读</div> -->
+            <div v-for="(item,index) in tag" :key="index" @click="changeTagArticle(item.id) ,tonum(index)"
+            :class="{ active: index == isActive.valueOf }">{{ item.tittle }}</div>
           </div>
       </div>
       <div class="body"> 
         <div class="main">
           <div class="content" ref="scrollBar">
             <div class="content-nav">
-              <div @click="chageArticle('articles')">推荐</div>
-              <div @click="chageArticle('new')">最新</div>
-              <div @click="chageArticle('like')" style="border-right: none;">热榜</div>
+              <!-- <div v-for="(index,item) in seetag" :key="index" @click="changeArticle(item.en)">{{ item.tag }}</div> -->
+              <div @click="changeArticle('articles')">推荐</div>
+              <div @click="changeArticle('new')">最新</div>
+              <div @click="changeArticle('like')" style="border-right: none;">热榜</div>
             </div>
             <div ref="list">
             <div class="content-body" v-for="(item,index) in articles1" :key="index">
@@ -149,7 +148,6 @@ useHead({
                 <span class="tad-write">{{item.author.name}} | {{computeTime(item.createdAt)}}  <span v-for="(item,index) in item.tags.data" :key="index">| {{ item.tittle }}</span></span>
               </div>
               <div class="main-content">
-                <!-- TODO:文章列表 -->
                 <router-link :to="`/article/${item.id}`" class="tittle" target="_blank">
                   {{item.tittle}}
                 </router-link>
@@ -179,7 +177,7 @@ useHead({
             </div>
             </div>
           </div>
-          <div class="tips">
+          <!-- <div class="tips">
             <div class="tip-first">
               <div class="icon-text">
                 <div class="night">晚上好！</div>
@@ -197,7 +195,8 @@ useHead({
             <div class="tip-first">
               晚上好
             </div>
-          </div>
+          </div> -->
+          <tip-comp></tip-comp>
         </div>
       </div>
 
