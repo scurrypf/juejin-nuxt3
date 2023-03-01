@@ -314,7 +314,7 @@ onMounted(() => {
                 <!--TODO:目录生成-->
                 <div ref="navRef">
                 <div v-for="(item,index) in creatCatogry" ref="liRef" :key="index" :class="[{ active: index === isActive }, cateClass(item.level)]" @click="activeSelect(index)">
-                    <NuxtLink class="dir">
+                    <NuxtLink>
                     {{item.text}}
                     </NuxtLink>
                 </div>

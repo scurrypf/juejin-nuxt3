@@ -2,15 +2,14 @@ import { useGraphql } from '../../utils/useGraph'
 
 export default defineEventHandler(async () => {
   const reqQuery = `query {
-    articles{
+    tags{
       data{
         id,
         attributes{
-          tittle,
-          content,
+          tittle
         }
       }
     }
   }`
-  return (await useGraphql(reqQuery)).articles.data;
+  return (await useGraphql(reqQuery)).tags;
 })
