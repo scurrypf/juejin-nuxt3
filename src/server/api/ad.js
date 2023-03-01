@@ -1,8 +1,9 @@
 import { useGraphql } from '../../utils/useGraph'
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
+  let id = getQuery(event).adid;
   const reqQuery = `query {
-    ad(id:3){
+    ad(id:${id}){
       data{
         attributes{
           adimg{

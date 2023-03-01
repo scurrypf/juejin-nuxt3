@@ -83,6 +83,114 @@
     .tip-second{
       margin-left: 20px;
       margin-bottom: 16px;
+      &:hover{
+        cursor: pointer;
+      }
+    }
+    .tip-juejin{
+      @include nav_bg_color();
+      margin-left: 20px;
+      width: 208px;
+      height: 48px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      &:hover{
+        cursor: pointer;
+      }
+      .juejin-img{
+        margin-right: 16px;
+      }
+      .ms-tittle{
+        width: 143px;
+        height: 21px;
+        font-size: 14px;
+        @include tittle_font_color();
+      }
+      .ms-content{
+        width: 145px;
+        height: 21px;
+        margin-top: 4px;
+        font-size: 12px;
+        @include nav_font_color();
+      }
+    }
+    .tip-author{
+      width: 240px;
+      height: 294px;
+      margin-left: 20px;
+      margin-bottom: 15px;
+      @include nav_bg_color();
+      &:hover{
+        cursor: pointer;
+      }
+      .author-tittle{
+        width: 209px;
+        height: 18px;
+        padding: 12px 15px 12px 15px;
+        border-bottom: 1px solid #f4f4f492;
+        font-size: 14px;
+        @include tittle_font_color();
+      }
+      .author-main{
+        width: 209px;
+        height: 45px;
+        padding: 12px 15px 12px 15px;
+        display: flex;
+        .headImg{
+          height: 46px;
+          width: 46px;
+          border-radius: 50%;
+        }
+        .main-con{
+          font-size: 14px;
+          @include nav_font_color();
+        }
+        .main-dis{
+          margin-top: 5px;
+          font-size: 12px;
+          @include nav_font_color();
+        }
+      }
+      .author-end{
+        width: 240px;
+        padding: 12px 0 12px 0;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        border-top: 1px solid #f4f4f4b5;
+        .link{
+          color: #1e80ff;
+          text-decoration: none;
+        }
+      }
+    }
+    .tip-xitu{
+      width: 240px;
+      height: 180px;
+      margin-left: 20px;
+      margin-bottom: 15px;
+      @include nav_bg_color();
+      &:hover{
+        cursor: pointer;
+      }
+      .xitu-main{
+        width: 216px;
+        height: 36px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        .des{
+          margin-left: 10px;
+          font-size: 14px;
+          @include nav_font_color();
+        }
+      }
+    }
+    .tip-footer{
+      width: 210px;
+      height: 254px;
+      margin-left: 20px;
     }
   //}
 }

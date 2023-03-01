@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted,nextTick ,ref} from 'vue'
+import {onMounted,ref} from 'vue'
 
 const computeTime = function(createdAt){
   const created = new Date(createdAt);
@@ -103,9 +103,7 @@ async function changeTagArticle(id){
 
 let isActive = shallowRef(0);
 function tonum(index){
-  console.log(index)
   isActive.value = index;
-  console.log(isActive.value)
 }
 
 watch(route, () => {

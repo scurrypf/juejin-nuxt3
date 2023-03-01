@@ -22,7 +22,8 @@ const route = useRoute()
 const url = ref(`/api/article/${route.params.id}`)
 // console.log(url.value)
 const article = await useFetch(url);
-const ad = await useFetch('/api/ad');
+// const adurl = ref(`/api/ad?adid=3`)
+const ad = await useFetch('/api/ad?adid=3');
 
 const adSrc = `http://localhost:1337${ad.data.value.adimg.url}`
 const display = article.data.value.content;
