@@ -20,16 +20,13 @@ const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji
 
 const route = useRoute()
 const url = ref(`/api/article/${route.params.id}`)
-// console.log(url.value)
 const article = await useFetch(url);
-// const adurl = ref(`/api/ad?adid=3`)
 const ad = await useFetch('/api/ad?adid=3');
 
 const adSrc = `http://localhost:1337${ad.data.value.adimg.url}`
 const display = article.data.value.content;
 const src = `http://localhost:1337${article.data.value.img.url}`
 const good = article.data.value.good;
-const discuss = article.data.value.discuss;
 const see = article.data.value.see;
 const authorName = article.data.value.author.name;
 const authid = article.data.value.author.id;
@@ -40,21 +37,17 @@ const authorDiscuss = article.data.value.author.discuss;
 
 const abouturl = ref(`/api/aboutArt?authid=${authid}`);
 const about = await useFetch(abouturl);
-console.log(about)
-// console.log(article)
-
 const aboutArr = about.data.value;
 
 // 生成目录
 let catalogueList = ref([]);
 // 将标题节点编译成文本
 const stringifyHeading = function (e) {
-    let result = ''
+    let result = '';
     visit(e, (node) => {
         if (node.type === 'text') {
             result += node.value;
-        }
-    })
+        }})
     return result;
 }
 // 生成目录
@@ -62,18 +55,14 @@ getProcessor({
   plugins: [
     {   // 通过getProcessor得到的文章的节点
         rehype: (p) => p.use(() => (tree) => {
-            // console.log(tree)
             if (tree && tree.children.length) {
                 let items = [];
                 // 过滤出html的DOM节点
                 let elementTree = tree.children.filter((v) => {
-                    // filter要return回去😭😭😭
                     return v.type === 'element'
                 })
-                // console.log(elementTree);
                 // 通过forEach遍历
                 elementTree.forEach((node) => {
-                    // console.log(node)
                     const removeTheme = node.children.filter((item) => item.value?.includes('theme'))
                     const removeHl = node.children.filter((item) => item.value?.includes('highlight'))
                     if (node.tagName[0] === 'h' && node.children.length && removeTheme.length === 0 && removeHl.length === 0) {
@@ -84,7 +73,6 @@ getProcessor({
                         })
                     }
                 })
-                // console.log(items)
                 // 筛选出h1、h2、h3标题，然后赋给catalogueList渲染
                 catalogueList.value = items.filter((v) => {
                     return v.level === 1 || v.level === 2 || v.level === 3 || v.level === 4;
@@ -95,7 +83,6 @@ getProcessor({
   ],
 }).processSync(display);
 let creatCatogry = catalogueList.value;
-
 // 标题样式改变
 const cateClass = (type) => {
     if (type === 2) return 'dir-content1';
@@ -112,11 +99,9 @@ let liRef = ref([]);
 const navRef = ref()
 const navMid = shallowRef(0)
 const currentScrollTop = shallowRef(0)
-
 // 赋值属性唯一ID
 const transformToId = () => {
   const articleDom = document.getElementById('markdown-body');
-  // console.log(articleDom);
     const children = Array.from(articleDom.children);
     if (children.length > 0) {
       let index = 0;
@@ -124,30 +109,18 @@ const transformToId = () => {
         const tagName = children[i].tagName;
         if (tagName === 'H1' || tagName === 'H2' || tagName === 'H3') {
           children[i].setAttribute('data-id', `heading-${index}`);
-          // console.log(children[i],index)
           index++;
         }
       }
     }
 }
-
-const isRender = useState('isRender', () => false)
-onMounted(() => {
-  isRender.value = true
-})
-
-onMounted(()=>{
-    transformToId()
-});
 // 实现点击跳转
 const activeSelect = (index) => {
     if (isActive.value === index) return;
-    // a标签锚点定位时跳转会出现将元素置最左, 所以用scrollIntoView定位
     heading.value[index].scrollIntoView();
     window.scrollBy(0, -headerHeight.value - 30);
     isActive.value = index;
 }
-
 // 获得h1,h2,h3,h4初始位置的标签
 const getInitByScroll = () => {
     const articleDom = document.getElementById('markdown-body');
@@ -167,22 +140,17 @@ const getInitByScroll = () => {
     })
 
 }
-
 // 实现滚动事件监听
 const onScroll = () => {
     currentScrollTop.value = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
-    // console.log(currentScrollTop.value)
     const scrollTop = currentScrollTop.value - headerHeight.value + 20;
     const itemOffsetTopLength = itemOffsetTop.value.length
-    // console.log(scrollTop,itemOffsetTopLength)
     for (let n = 0; n < itemOffsetTopLength; n++) {
         if (scrollTop >= itemOffsetTop.value[n].top - headerHeight.value)
         isActive.value = itemOffsetTop.value[n].key
-        // console.log(isActive.value)
     }
     if (isActive.value) {
         const activeEleTop = liRef.value[isActive.value].offsetTop;
-        // console.log(navMid.value , activeEleTop)
         navMid.value > activeEleTop ? navRef.value.scrollTo({
             top: 0,
         }): navRef.value.scrollTo({
@@ -190,41 +158,23 @@ const onScroll = () => {
         })
     }
 }
-
-
+const isRender = useState('isRender', () => false)
 onMounted(() => {
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll);
+    transformToId();
+    isRender.value = true;
     nextTick(() => {
         getInitByScroll();
     })
-}
-);
-
+});
+onUnmounted(() => {
+    window.removeEventListener('scroll', onScroll)
+});
 </script>
 
 <template>
     <div class="main">
-        <div class="aside-btns">
-            <div class="btn-good">
-                <svg t="1677242635373" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9774" width="17" height="17"><path d="M889.6 396.8 608 396.8C633.6 262.4 684.8 96 576 44.8 460.8-6.4 454.4 64 441.6 179.2c-12.8 121.6-192 249.6-192 249.6l0 563.2 608 0c83.2-38.4 134.4-377.6 160-499.2C1043.2 371.2 889.6 396.8 889.6 396.8z" p-id="9775" fill="#8a919f"></path><path d="M0 428.8l179.2 0 0 569.6-179.2 0 0-569.6Z" p-id="9776" fill="#8a919f"></path></svg>
-            </div>
-            <div class="btn-good">
-                <svg t="1677244231026" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13984" width="17" height="17"><path d="M867.265818 784.595468 681.177586 784.595468c-62.5895 60.688197-158.625764 169.570024-158.625764 169.570024-5.817496 6.058996-15.288195 6.058996-21.086248 0 0 0-131.200134-135.805012-162.894997-169.570024L156.752602 784.595468c-67.418482 0-122.045637-63.007009-122.045637-131.366933L34.706965 189.078333c0-68.358901 53.43398-123.788328 119.322619-123.788328l715.938786 0c65.907059 0 119.322619 55.429427 119.322619 123.788328l0 464.150202C989.292012 721.578226 934.664857 784.595468 867.265818 784.595468L867.265818 784.595468zM273.353227 373.638769c-32.94432 0-59.661821 27.715225-59.661821 61.898769 0 34.174334 26.716478 61.889559 59.661821 61.889559s59.661821-27.715225 59.661821-61.889559C333.015048 401.353994 306.297546 373.638769 273.353227 373.638769L273.353227 373.638769zM511.999488 373.638769c-32.94432 0-59.661821 27.715225-59.661821 61.898769 0 34.174334 26.735921 61.889559 59.661821 61.889559 32.94432 0 59.661821-27.715225 59.661821-61.889559C571.66131 401.353994 544.943808 373.638769 511.999488 373.638769L511.999488 373.638769zM750.64575 373.638769c-32.9259 0-59.661821 27.715225-59.661821 61.898769 0 34.174334 26.735921 61.889559 59.661821 61.889559 32.963763 0 59.661821-27.715225 59.661821-61.889559C810.307571 401.353994 783.609513 373.638769 750.64575 373.638769L750.64575 373.638769zM750.64575 373.638769" fill="#8a919f" p-id="13985"></path></svg>
-            </div>
-            <div class="btn-good">
-                <svg t="1677244265976" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15037" width="17" height="17"><path d="M781.186088 616.031873q17.338645 80.573705 30.59761 145.848606 6.119522 27.537849 11.219124 55.075697t9.689243 49.976096 7.649402 38.247012 4.079681 19.888446q3.059761 20.398406-9.179283 27.027888t-27.537849 6.629482q-5.099602 0-14.788845-3.569721t-14.788845-5.609562l-266.199203-155.027888q-72.414343 42.836653-131.569721 76.494024-25.498008 14.278884-50.486056 28.557769t-45.386454 26.517928-35.187251 20.398406-19.888446 10.199203q-10.199203 5.099602-20.908367 3.569721t-19.378486-7.649402-12.749004-14.788845-2.039841-17.848606q1.01992-4.079681 5.099602-19.888446t9.179283-37.737052 11.729084-48.446215 13.768924-54.055777q15.298805-63.23506 34.677291-142.788845-60.175299-52.015936-108.111554-92.812749-20.398406-17.338645-40.286853-34.167331t-35.697211-30.59761-26.007968-22.438247-11.219124-9.689243q-12.239044-11.219124-20.908367-24.988048t-6.629482-28.047809 11.219124-22.438247 20.398406-10.199203l315.155378-28.557769 117.290837-273.338645q6.119522-16.318725 17.338645-28.047809t30.59761-11.729084q10.199203 0 17.848606 4.589641t12.749004 10.709163 8.669323 12.239044 5.609562 10.199203l114.231076 273.338645 315.155378 29.577689q20.398406 5.099602 28.557769 12.239044t8.159363 22.438247q0 14.278884-8.669323 24.988048t-21.928287 26.007968z" p-id="15038" fill="#8a919f"></path></svg>
-            </div>
-            <div class="btn-good">
-                <svg t="1677244330528" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="16331" width="17" height="17"><path d="M919.272727 416.581818L607.418182 79.127273c-11.636364-11.636364-32.581818-11.636364-44.218182 0-6.981818 6.981818-9.309091 16.290909-9.309091 25.6v181.527272c-258.327273 0-465.454545 207.127273-465.454545 463.127273 0 62.836364 13.963636 125.672727 39.563636 183.854546 37.236364-193.163636 221.090909-339.781818 425.890909-339.781819v181.527273c-2.327273 9.309091 2.327273 18.618182 9.309091 25.6 4.654545 6.981818 13.963636 9.309091 23.272727 9.309091s18.618182-4.654545 23.272728-11.636364L919.272727 465.454545c6.981818-6.981818 9.309091-13.963636 9.309091-23.272727s-4.654545-18.618182-9.309091-25.6z" p-id="16332" fill="#8a919f"></path></svg>
-            </div>
-            <el-divider />
-            <div class="btn-good">
-                <svg t="1677244371607" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="17599" id="mx_n_1677244371609" width="18" height="18"><path d="M1004.657 801.716 602.263 91.599c-49.213-86.817-129.646-86.817-178.866 0L21.004 801.716c-49.207 86.906-8.949 157.798 89.388 157.798l804.877 0C1013.606 959.514 1053.825 888.622 1004.657 801.716zM544.635 832.216l-63.649 0 0-63.649 63.649 0L544.635 832.216zM544.635 641.27l-63.649 0L480.986 259.377l63.649 0L544.635 641.27z" p-id="17600" fill="#8a919f"></path></svg>
-            </div>
-            <div class="btn-good">
-                <svg t="1677244441390" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="18825" id="mx_n_1677244441392" width="17" height="17"><path d="M927.744 480.256H96.256c-17.408 0-31.744 14.336-31.744 31.744 0 17.408 14.336 31.744 31.744 31.744h831.488c17.408 0 32.256-14.336 32.256-31.744-0.512-17.408-14.848-31.744-32.256-31.744zM894.464 639.488c-17.408 0-32.256 14.336-32.256 31.744v159.232c0 17.408-14.336 31.744-32.256 31.744h-192c-17.408 0-32.256 14.336-32.256 31.744 0 17.408 14.336 31.744 32.256 31.744h192c52.736 0 95.744-43.008 95.744-95.744V670.72c0.512-16.896-13.824-31.232-31.232-31.232zM350.72 862.208H190.976c-17.408 0-32.256-14.336-32.256-31.744v-159.232c0-17.408-14.336-31.744-32.256-31.744s-32.256 14.336-32.256 31.744v159.232c0 52.736 43.008 95.744 95.744 95.744h159.744c17.408 0 32.256-14.336 32.256-31.744 1.024-17.92-13.312-32.256-31.232-32.256zM126.976 384.512c17.408 0 32.256-14.336 32.256-31.744V193.536c0-17.408 14.336-31.744 32.256-31.744h159.744c17.408 0 32.256-14.336 32.256-31.744 0-17.408-14.336-31.744-32.256-31.744H190.976c-52.736 0-95.744 43.008-95.744 95.744V353.28c-0.512 17.408 13.824 31.232 31.744 31.232zM638.464 161.792h192c17.408 0 32.256 14.336 32.256 31.744v159.232c0 17.408 14.336 31.744 32.256 31.744 17.408 0 32.256-14.336 32.256-31.744V193.536c0-52.736-43.008-95.744-95.744-95.744h-192c-17.408 0-32.256 14.336-32.256 31.744-0.512 17.92 13.824 32.256 31.232 32.256z" p-id="18826" fill="#8a919f"></path><path d="M703.488 737.28H320.512c-25.6 0-46.592-20.992-46.592-46.592V333.312c0-25.6 20.992-46.592 46.592-46.592h382.976c25.6 0 46.592 20.992 46.592 46.592v357.376c0 25.6-20.992 46.592-46.592 46.592z" p-id="18827" fill="#8a919f"></path></svg>
-            </div>
-        </div>
+        <AsideBtn></AsideBtn>
         <div class="body" v-show="isRender">
             <div class="content" >
                 <h1>{{ article.data.value.tittle }}</h1>
@@ -300,33 +250,24 @@ onMounted(() => {
                 <img :src="adSrc" width="300" height="90"/>
             </div>
             <div class="other">
-                <div class="tittle">
-                    相关文章
-                </div>
+                <div class="tittle">相关文章</div>
                 <div class="relation" v-for="(item,index) in aboutArr" :key="index">
                         <div class="rel-tittle">
                             <router-link :to="`/article/${item.id}`" class="rel-tittle" target="_blank">
-                            {{ item.tittle }}
-                            </router-link>
+                            {{ item.tittle }}</router-link>
                         </div>
                         <div class="rel-data">
                             <router-link :to="`/article/${item.id}`" class="rel-data" target="_blank">
-                                {{item.good}}点赞&nbsp; · &nbsp;{{item.discuss}}评论
-                            </router-link>
+                                {{item.good}}点赞&nbsp; · &nbsp;{{item.discuss}}评论</router-link>
                         </div>
                 </div>
             </div>
             <div class="dir">
-                <div class="dir-tittle">
-                    目录
-                </div>
+                <div class="dir-tittle">目录</div>
                 <el-divider />
-                <!--TODO:目录生成-->
                 <div ref="navRef">
                 <div v-for="(item,index) in creatCatogry" ref="liRef" :key="index" :class="[{ active: index === isActive }, cateClass(item.level)]" @click="activeSelect(index)">
-                    <NuxtLink>
-                    {{item.text}}
-                    </NuxtLink>
+                    <NuxtLink>{{item.text}}</NuxtLink>
                 </div>
                 </div>
             </div>

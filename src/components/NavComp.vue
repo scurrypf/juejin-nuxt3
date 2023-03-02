@@ -93,7 +93,6 @@ function Totop(){
 }
 
 function setButton(){
-  // console.log(document.documentElement.scrollTop)
   if(document.documentElement.scrollTop > 350){
     hasButton.value = true;
   }else{
@@ -115,6 +114,9 @@ function changeTheme () {
 
 onMounted(()=>{
   window.addEventListener('scroll',setButton)
+})
+onUnmounted(()=>{
+  window.removeEventListener('scroll',setButton)
 })
 
 </script>

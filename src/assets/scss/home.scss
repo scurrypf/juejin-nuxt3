@@ -190,9 +190,53 @@
       }
     }
     .tip-footer{
-      width: 210px;
+      width: 240px;
       height: 254px;
       margin-left: 20px;
+      font-size: 12px;
+      @include nav_font_color();
+      .foot-span{
+        margin-right: 5px;
+        text-decoration: none;
+        @include nav_font_color();
+        &:hover{
+          cursor: pointer;
+          @include dir_font_color();
+        }
+      }
+      .foot-div{
+        margin-bottom: 3px;
+      }
+      .foot-police{
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        &:hover{
+          cursor: pointer;
+          @include dir_font_color();
+        }
+      }
+      .foot-juejin{
+        margin-bottom: 3px;
+        &:hover{
+          cursor: pointer;
+          @include dir_font_color();
+        }
+      }
+      .img-weibo{
+        margin-right: 8px;
+        &:hover{
+          cursor: pointer;
+        }
+      }
+      .img-chat{
+        &:hover{
+          cursor: pointer;
+        }
+      }
+      .foot-write{
+        margin-bottom: 3px;
+      }
     }
   //}
 }
