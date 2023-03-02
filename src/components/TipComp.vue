@@ -1,23 +1,20 @@
 <script setup>
+import {ref,onMounted } from 'vue'
+
 const ad4 = await useFetch('/api/ad?adid=4');
 const ad5 = await useFetch('/api/ad?adid=5');
 
 const adSrc4 = `http://localhost:1337${ad4.data.value.adimg.url}`
 const adSrc5 = `http://localhost:1337${ad5.data.value.adimg.url}`
 
-const authorArr = ref([])
-const data = await useFetch('/api/author/authors');
-console.log(data)
-authorArr.value = data.data.value;
-console.log(authorArr.value)
+let authorArr = ref([]);
+const data1 = await useFetch('/api/author/authors');
+authorArr.value = data1.data.value;
 
 authorArr.value.forEach((ele)=>{
-    console.log(ele.level.url)
   ele.level.url = `http://localhost:1337${ele.level.url}`
   ele.headImg.url = `http://localhost:1337${ele.headImg.url}`
-  console.log(ele.level.url)
-  console.log(ele.headImg.url)
-})
+ });
 
 </script>
 
@@ -58,9 +55,9 @@ authorArr.value.forEach((ele)=>{
         <div class="author-tittle">
             🎖️作者榜
         </div>
-        <div class="author-main" v-for="(index,item) in authorArr" :key="index">
+        <div class="author-main" v-for="(item,index) in authorArr" :key="index">
             <div class="main-img">
-                <img class="headImg" :src="item.headImg.url" />
+                <img :src="item.headImg.url" class="headImg" />
             </div>
             <div class="main-con">
                 <div class="main-name">

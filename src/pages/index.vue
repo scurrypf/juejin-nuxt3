@@ -194,7 +194,7 @@ useHead({
               晚上好
             </div>
           </div> -->
-          <tip-comp></tip-comp>
+          <TipComp />
         </div>
       </div>
 
