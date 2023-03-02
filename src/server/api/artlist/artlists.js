@@ -1,15 +1,30 @@
 import { useGraphql } from '../../../utils/useGraph'
 
 export default defineEventHandler(async (event) => {
-  const id = event.context.params.tagid;
+  let Query = getQuery(event);
+  let sort = Query.sort;
+  let pagenum = Query.pagenum || '';
+  let tagid = Query.tagid || 2;
+  let sorts = ''
+  switch(sort){
+    case 'new':
+      sorts = 'sort:"createdAt:desc"'
+      break;
+    case 'hot':
+      sorts = 'sort:"good:desc"'
+      break;
+  }
   const reqQuery = `query {
     articles(filters:{
         tags:{
           id:{
-           eq:${id}
+           eq:${tagid}
           } 
         }
-      }){
+      }
+      ${sorts}
+      pagination: { page: ${pagenum}, pageSize: 10}
+    ){
       data{
         id,
         attributes{

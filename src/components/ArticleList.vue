@@ -25,22 +25,23 @@ const computeTime = function(createdAt){
   }
   return res;
 }
+const route = useRoute();
+let pagenum = 1;
 
-const {data:articleArr} = await useFetch('/api/articles')
+console.log(route.query,route.params)
+const {data:articleArr} = await useFetch(`/api/artlist/artlists?sort=${route.query?.sort || ''}&tagid=${route?.params?.type || ''}&pagenum=1`)
 
-
+console.log(articleArr)
 let articles1 = ref([]);
 articles1.value = articleArr.value.data;
 articles1.value.forEach((ele)=>{
   ele.img.url = `http://localhost:1337${ele.img.url}`
 })
 
-let pagenum = 1;
+
 let scrollBar = ref();
 let list = ref();
-let tagid = ref(2);
 
-const route = useRoute();
 
 function Throttle(fn, wait = 500){
   let timer = null;
@@ -66,23 +67,15 @@ function useScrollBottom(){
 const addArtListItem = Throttle(async () => {
   if (useScrollBottom() && articles1.value != null) {
     if(pagenum > 4)pagenum = 1;
-    const { data } = await useFetch(`/api/page?pagenum=${pagenum++}&tag=${tagid.value || 2}`)
-    if (!data.value)return;
-    data.value.forEach((ele)=>{
+    const { data } = await useFetch(`/api/artlist/artlists?sort=${route?.query?.sort || ''}&tagid=${route?.params?.type || ''}&pagenum=${pagenum++}`)
+    console.log(data)
+    if (!data.value.data)return;
+    data.value.data.forEach((ele)=>{
       ele.img.url = `http://localhost:1337${ele.img.url}`
   })
-      articles1.value.push(...data.value)
+      articles1.value.push(...data.value.data)
   }
 })
-
-async function changeArticle(str){
-  const url = ref(`/api/${str}`);
-  let {data} = await useFetch(url);
-  articles1.value = data.value.data;
-  articles1.value.forEach((ele)=>{
-    ele.img.url = `http://localhost:1337${ele.img.url}`
-  })
-}
 
 watch(route, () => {
   pagenum = 1
@@ -98,10 +91,9 @@ onUnmounted(() => {
 <template>
 <div class="content" ref="scrollBar">
             <div class="content-nav">
-              <!-- <div v-for="(index,item) in seetag" :key="index" @click="changeArticle(item.en)">{{ item.tag }}</div> -->
-              <div @click="changeArticle('articles')">推荐</div>
-              <div @click="changeArticle('new')">最新</div>
-              <div @click="changeArticle('like')" style="border-right: none;">热榜</div>
+              <div><NuxtLink to="/?">推荐</NuxtLink></div>
+              <div><NuxtLink to="/?sort=new">最新</NuxtLink></div>
+              <div style="border-right: none;"><NuxtLink to="/?sort=hot">热榜</NuxtLink></div>
             </div>
             <div ref="list">
             <div class="content-body" v-for="(item,index) in articles1" :key="index">
@@ -138,7 +130,6 @@ onUnmounted(() => {
             </div>
             </div>
           </div>
-
 </template>
 
 <style lang="scss" scoped>

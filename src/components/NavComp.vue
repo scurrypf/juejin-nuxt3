@@ -1,7 +1,10 @@
 <template>
     <div ref="totop" class="totop">
         <div class="nav-top" ref="top">
-        <img src="https://lf3-cdn-tos.bytescm.com/obj/static/xitu_juejin_web/e08da34488b114bd4c665ba2fa520a31.svg" class="logo">
+          <NuxtLink to="/">
+            <img src="https://lf3-cdn-tos.bytescm.com/obj/static/xitu_juejin_web/e08da34488b114bd4c665ba2fa520a31.svg" class="logo">
+          </NuxtLink>
+        
         <div class="head">
           <NuxtLink to="/" class="nav-btn">首页</NuxtLink>
           <div>沸点</div>
