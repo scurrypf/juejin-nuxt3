@@ -38,6 +38,9 @@
         color: #5e6d82;
         padding: 0 14.5px 0 14.5px;
         border-right: 1px solid #f4f4f4b5;
+        .active{
+          color: #1e80ff !important;
+        }
         &:hover{
           cursor: pointer;
           color: #1e80ff;
@@ -352,4 +355,8 @@ text-decoration:none;
 font-size: 14px;
 width: 516px;
 height: 22px;
+}
+.tab-link{
+  @include nav_font_color();
+  text-decoration: none;
 }

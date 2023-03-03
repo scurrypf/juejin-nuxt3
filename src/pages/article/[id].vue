@@ -15,8 +15,7 @@ import { visit } from 'unist-util-visit'
 import { onMounted, onUnmounted, ref, nextTick} from 'vue'
 
 // 渲染文章
-const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji(), gfm(), highlight(), math(), 
-                 medium({ background: 'rgba(0, 0, 0, 0.7)' }), mermaid()]
+const plugins = [breaks(), frontmatter(), highlightStyle(), themeStyle(), gemoji(), gfm(), highlight(), math(), medium({ background: 'rgba(0, 0, 0, 0.7)' }), mermaid()]
 
 const route = useRoute()
 const url = ref(`/api/article/${route.params.id}`)
@@ -52,15 +51,13 @@ const stringifyHeading = function (e) {
 }
 // 生成目录
 getProcessor({
-  plugins: [
-    {   // 通过getProcessor得到的文章的节点
+  plugins: [{   // 通过getProcessor得到的文章的节点
         rehype: (p) => p.use(() => (tree) => {
             if (tree && tree.children.length) {
                 let items = [];
                 // 过滤出html的DOM节点
                 let elementTree = tree.children.filter((v) => {
-                    return v.type === 'element'
-                })
+                    return v.type === 'element'  })
                 // 通过forEach遍历
                 elementTree.forEach((node) => {
                     const removeTheme = node.children.filter((item) => item.value?.includes('theme'))
@@ -159,6 +156,9 @@ const onScroll = () => {
     }
 }
 const isRender = useState('isRender', () => false)
+useHead({
+    title:article.data.value.tittle
+})
 onMounted(() => {
     window.addEventListener('scroll', onScroll);
     transformToId();

@@ -16,13 +16,21 @@ authorArr.value.forEach((ele)=>{
   ele.headImg.url = `http://localhost:1337${ele.headImg.url}`
  });
 
+// 跟随系统显示问候语
+let word = ref('');
+let h = new Date().getHours();
+if(h < 8)word.value = '早上好!'
+else if(h < 12)word.value = '上午好!'
+else if(h < 18)word.value = '下午好!'
+else if(h < 24)word.value = '晚上好!'
+
 </script>
 
 <template>
 <div class="tips">
     <div class="tip-first">
         <div class="icon-text">
-            <div class="night">晚上好！</div>
+            <div class="night">{{word}}</div>
             <div>点亮在社区的每一天</div>
         </div>
         <div class="btn">

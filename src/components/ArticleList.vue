@@ -1,5 +1,7 @@
 <script setup>
+import { ref } from "vue";
 
+// 计算文章时间
 const computeTime = function(createdAt){
   const created = new Date(createdAt);
   const now = new Date();
@@ -28,10 +30,9 @@ const computeTime = function(createdAt){
 const route = useRoute();
 let pagenum = 1;
 
-console.log(route.query,route.params)
+// console.log(route.query,route.params)
 const {data:articleArr} = await useFetch(`/api/artlist/artlists?sort=${route.query?.sort || ''}&tagid=${route?.params?.type || ''}&pagenum=1`)
 
-console.log(articleArr)
 let articles1 = ref([]);
 articles1.value = articleArr.value.data;
 articles1.value.forEach((ele)=>{
@@ -48,27 +49,29 @@ function Throttle(fn, wait = 500){
   return () => {
     if (!timer) {
       timer = setTimeout(() => {
-        timer = null
-        fn && fn()
+        timer = null;
+        fn && fn();
       }, wait)
     }
   }
 }
 
+// 监听滚动
 function useScrollBottom(){
-  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-  const clientHeight = document.documentElement.clientHeight
-  const scrollHeight = document.documentElement.scrollHeight
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const clientHeight = document.documentElement.clientHeight;
+  const scrollHeight = document.documentElement.scrollHeight;
   if (scrollTop + clientHeight + 200 >= scrollHeight)// 还未到底部就先开始请求
-    return true
-  return false
+    return true;
+  return false;
 }
 
+// 实现触底请求刷新
 const addArtListItem = Throttle(async () => {
   if (useScrollBottom() && articles1.value != null) {
     if(pagenum > 4)pagenum = 1;
     const { data } = await useFetch(`/api/artlist/artlists?sort=${route?.query?.sort || ''}&tagid=${route?.params?.type || ''}&pagenum=${pagenum++}`)
-    console.log(data)
+    // console.log(data)
     if (!data.value.data)return;
     data.value.data.forEach((ele)=>{
       ele.img.url = `http://localhost:1337${ele.img.url}`
@@ -76,6 +79,16 @@ const addArtListItem = Throttle(async () => {
       articles1.value.push(...data.value.data)
   }
 })
+
+// 实现文章tj、new、hot分类
+const changeArticle = async (sort)=>{
+  const { data} = await useFetch(`/api/artlist/artlists?sort=${sort || ''}&tagid=${route?.params?.type || ''}&pagenum=${pagenum++}`)
+    if (!data.value.data)return;
+    data.value.data.forEach((ele)=>{
+      ele.img.url = `http://localhost:1337${ele.img.url}`
+  })
+      articles1.value = data.value.data;
+}
 
 watch(route, () => {
   pagenum = 1
@@ -91,10 +104,11 @@ onUnmounted(() => {
 <template>
 <div class="content" ref="scrollBar">
             <div class="content-nav">
-              <div><NuxtLink to="/?">推荐</NuxtLink></div>
-              <div><NuxtLink to="/?sort=new">最新</NuxtLink></div>
-              <div style="border-right: none;"><NuxtLink to="/?sort=hot">热榜</NuxtLink></div>
+              <div><NuxtLink @click="changeArticle" to="?" class="tab-link">推荐</NuxtLink></div>
+              <div><NuxtLink to="?sort=new" @click="changeArticle('new')" class="tab-link">最新</NuxtLink></div>
+              <div style="border-right: none;"><NuxtLink to="?sort=hot" @click="changeArticle('hot')" class="tab-link">热榜</NuxtLink></div>
             </div>
+            <!-- <el-skeleton v-if="pending"></el-skeleton> -->
             <div ref="list">
             <div class="content-body" v-for="(item,index) in articles1" :key="index">
               <div class="list-tab">

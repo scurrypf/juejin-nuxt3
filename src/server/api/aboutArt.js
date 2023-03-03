@@ -13,7 +13,9 @@ export default defineEventHandler(async (event) => {
       data{
         id,
         attributes{
-          tittle
+          tittle,
+          good,
+          discuss
         }
       }
     }
