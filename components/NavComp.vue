@@ -121,11 +121,9 @@ onMounted(()=>{
 onUnmounted(()=>{
   window.removeEventListener('scroll',setButton)
 })
-
 </script>
 <style lang="scss" scoped>
-@import "@/assets/scss/nav.scss";
-@import "@/assets/scss/styles/mixin.scss";
-@import "@/assets/scss/styles/variable.scss";
-
+@import "../assets/scss/nav.scss";
+@import "../assets/scss/styles/mixin.scss";
+@import "../assets/scss/styles/variable.scss";
 </style>

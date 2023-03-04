@@ -132,5 +132,5 @@ else if(h < 24)word.value = '晚上好!'
 </template>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/home.scss";
+@import "../assets/scss/home.scss";
 </style>

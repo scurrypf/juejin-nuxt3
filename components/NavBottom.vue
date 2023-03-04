@@ -6,8 +6,8 @@ tag = tagsArr.data.value.data;
 
 const route = useRoute();
 
-let isActive = ref(2);
-isActive.value = route.params.type;
+let isActive = ref();
+isActive.value = route.params.type || 2;
 // function tonum(index){
 //   isActive.value = index;
 // }
@@ -27,5 +27,5 @@ isActive.value = route.params.type;
 </template>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/home.scss";
+@import "../assets/scss/home.scss";
 </style>

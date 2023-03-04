@@ -27,5 +27,5 @@ const aboutArr = about.data.value;
 
 </template>
 <style lang="scss" scoped>
-@import "@/assets/scss/article.scss";
+@import "../assets/scss/article.scss";
 </style>
