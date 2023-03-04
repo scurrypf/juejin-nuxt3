@@ -136,6 +136,9 @@
     justify-content: center;
     align-items: center;
     text-decoration:none;
+    .actives{
+      color: #1e80ff !important;
+    }
     &:hover{
       cursor: pointer;
       color: #1e80ff;

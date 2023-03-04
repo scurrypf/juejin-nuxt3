@@ -1,4 +1,4 @@
-import { highlight } from '../assets/highlight'
+import { highlight } from '../assets/highLight'
 
 export default function highlightStyle() {
   return {

@@ -107,6 +107,7 @@ h1{
         height: 187px;
         padding: 20px;
         margin-bottom: 20px;
+        border-radius: 5px;
     .info{
             width: 260px;
             height: 50px;
@@ -269,6 +270,7 @@ h1{
     }
     .active{
         @include dir_font_color();
+        border-left: 2px solid #1e80ff;
     }
     .dir-content2{
         width: 256px;

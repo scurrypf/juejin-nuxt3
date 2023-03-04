@@ -7,3 +7,6 @@ node_modules
 .env
 dist
 detail.vue
+highlight.js
+themes.js
+highlLight.js

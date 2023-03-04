@@ -27,6 +27,7 @@
     @include nav_bg_color();
     width: 700px;
     height: auto;
+    border-radius: 4px;
     //overflow-y: auto;
     .content-nav{
       height: 15px;
@@ -62,6 +63,7 @@
       padding: 16px;
       margin-bottom: 16px;
       display: flex;
+      border-radius: 3px;
       .icon-text{
         .night{
         font-weight: 600;
@@ -98,6 +100,7 @@
       padding: 16px;
       margin-bottom: 16px;
       display: flex;
+      border-radius: 3px;
       &:hover{
         cursor: pointer;
       }
@@ -124,6 +127,7 @@
       margin-left: 20px;
       margin-bottom: 15px;
       @include nav_bg_color();
+      border-radius: 3px;
       &:hover{
         cursor: pointer;
       }
@@ -176,6 +180,7 @@
       margin-left: 20px;
       margin-bottom: 15px;
       @include nav_bg_color();
+      border-radius: 3px;
       &:hover{
         cursor: pointer;
       }
