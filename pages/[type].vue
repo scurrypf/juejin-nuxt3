@@ -1,7 +1,7 @@
 <script setup>
 
 useHead({
-  title:'掘金',
+  title: '掘金',
 })
 
 </script>
@@ -10,13 +10,12 @@ useHead({
   <div>
     <div class="container">
       <NavBottom></NavBottom>
-      <div class="body"> 
+      <div class="body">
         <div class="main">
           <ArticleList></ArticleList>
           <TipComp />
         </div>
       </div>
-
     </div>
   </div>
 </template>

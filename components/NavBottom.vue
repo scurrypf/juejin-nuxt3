@@ -8,22 +8,19 @@ const route = useRoute();
 
 let isActive = ref();
 isActive.value = route.params.type || 2;
-// function tonum(index){
-//   isActive.value = index;
-// }
 
 </script>
 
 <template>
-<div class="nav-bottom">
+  <div class="nav-bottom">
     <div class="Tab">
-        <div v-for="(item,index) in tag" :key="index" >
+      <div v-for="(item, index) in tag" :key="index">
         <NuxtLink :to="`/${item.id}`" :class="{ active: item.id == isActive }" class="tab-link">
           {{ item.tittle }}
-        </NuxtLink>  
+        </NuxtLink>
       </div>
     </div>
-</div>
+  </div>
 </template>
 
 <style lang="scss" scoped>

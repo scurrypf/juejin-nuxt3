@@ -1,7 +1,7 @@
 @import "@/assets/scss/styles/mixin.scss";
 @import "@/assets/scss/styles/variable.scss";
 
-html,body{
+html,body {
     margin: 0px;
     padding: 0px;
     @include bg_color();

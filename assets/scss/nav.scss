@@ -2,116 +2,146 @@
 @import "@/assets/scss/styles/mixin.scss";
 @import "@/assets/scss/styles/variable.scss";
 
-.nav-top{
-    height: 60px;
-    width: 100%;
-    @include nav_bg_color();
-    border-bottom: 1px solid #f1f1f132;
+.nav-top {
+  height: 60px;
+  width: 100%;
+  @include nav_bg_color();
+  border-bottom: 1px solid #f1f1f132;
+  position: relative;
+
+  .head {
+    width: 468px;
     position: relative;
-    .head{
-      width: 468px;
-      position: relative;
-      left: 192px;
-      display: flex;
-      flex-wrap:wrap;
-      div{
-        width: 51px;
-        height: 60px;
-        font-size: 14px;
-        @include nav_font_color();
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &:hover{
-          cursor: pointer;
-          color: #1e80ff;
-          border-bottom: 1px solid #1e80ff;
-        }
-      }
-    }
-    .report{
-      width: 115px;
-      height: 40px;
-      position: absolute;
-      top: 10px;
-      left: 669px;
-    }
-    .search{
-      width: 260px;
-      height: 33px;
-      position: absolute;
-      top: 13px;
-      right: 430px;
-    }
-    .Img{
-      position: absolute;
-      top: 6px;
-      right: 50px;
-      .headImg{
-        height: 48px;
-        width: 48px;
-        border-radius: 50%;
-      }
-    }
-    .btn{
-      height: 36px;
-      position: absolute;
-      top: 13px;
-      right: 280px;
+    left: 192px;
+    display: flex;
+    flex-wrap: wrap;
+
+    div {
+      width: 51px;
+      height: 60px;
       font-size: 14px;
-      // display: flex;
-      // flex-wrap: nowrap;
-      // div{
-      //   width: 20px;
-      //   color: white;
-      //   background-color: #409EFF;
-      //   display: flex;
-      //   justify-content: center;
-      //   align-items: center;
-      // }
-    }
-    .nav-user{
-      position: absolute;
-      right: 200px;
-      top: 15px;
-      margin-right: 10px;
+      @include nav_font_color();
       display: flex;
+      justify-content: center;
       align-items: center;
-      color: #1e80ff;
-      font-family: 'Courier New', Courier, monospace;
-      font-weight: 400;
-      &:hover{
+
+      &:hover {
         cursor: pointer;
+        color: #1e80ff;
+        border-bottom: 1px solid #1e80ff;
       }
     }
   }
-.logo{
+
+  .report {
+    width: 115px;
+    height: 40px;
+    position: absolute;
+    top: 10px;
+    left: 669px;
+  }
+
+  .search {
+    width: 260px;
+    height: 33px;
+    position: absolute;
+    top: 13px;
+    right: 430px;
+  }
+
+  .Img {
+    position: absolute;
+    top: 6px;
+    right: 50px;
+
+    .headImg {
+      height: 48px;
+      width: 48px;
+      border-radius: 50%;
+    }
+  }
+
+  .btn {
+    height: 36px;
+    position: absolute;
+    top: 13px;
+    right: 280px;
+    font-size: 14px;
+    // display: flex;
+    // flex-wrap: nowrap;
+    // div{
+    //   width: 20px;
+    //   color: white;
+    //   background-color: #409EFF;
+    //   display: flex;
+    //   justify-content: center;
+    //   align-items: center;
+    // }
+  }
+
+  .nav-user {
+    position: absolute;
+    right: 200px;
+    top: 15px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    color: #1e80ff;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 400;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.logo {
   width: 107px;
   height: 22px;
   position: absolute;
   top: 19px;
   left: 70px;
 }
-.tabled{
-    position: absolute;
-    top: 5px;
-    left: 371px;
-    z-index: 9;
-    // white-space: nowrap;
-    padding: 2px 7px;
-    background-color: #ee502f;
-    border-radius: 50px;
-    text-align: center;
-    font-weight: 500;
-    font-size: 16px;
-    transform: scale(.5);//缩小
-    line-height: 18px;
-    color: #fff;
+
+.tabled {
+  position: absolute;
+  top: 5px;
+  left: 371px;
+  z-index: 9;
+  // white-space: nowrap;
+  padding: 2px 7px;
+  background-color: #ee502f;
+  border-radius: 50px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  transform: scale(.5); //缩小
+  line-height: 18px;
+  color: #fff;
 }
-.el-dropdown-item{
+.ftabled {
+  position: absolute;
+  top: 5px;
+  left: 220px;
+  z-index: 9;
+  // white-space: nowrap;
+  padding: 2px 7px;
+  background-color: #ee502f;
+  border-radius: 50px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  transform: scale(.5); //缩小
+  line-height: 18px;
+  color: #fff;
+}
+
+.el-dropdown-item {
   font-size: 14px;
 }
-.home{
+
+.home {
   width: 51px;
   height: 60px;
   font-size: 14px;
@@ -119,7 +149,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  text-decoration:none;
+  text-decoration: none;
 
   &:hover {
     cursor: pointer;
@@ -127,26 +157,29 @@
     border-bottom: 1px solid #1e80ff;
   }
 }
-.nav-btn{
-    width: 51px;
-    height: 60px;
-    font-size: 14px;
-    @include nav_font_color();
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration:none;
-    .actives{
-      color: #1e80ff !important;
-    }
-    &:hover{
-      cursor: pointer;
-      color: #1e80ff;
-      border-bottom: 1px solid #1e80ff;
-    }
+
+.nav-btn {
+  width: 51px;
+  height: 60px;
+  font-size: 14px;
+  @include nav_font_color();
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+
+  .actives {
+    color: #1e80ff !important;
+  }
+
+  &:hover {
+    cursor: pointer;
+    color: #1e80ff;
+    border-bottom: 1px solid #1e80ff;
+  }
 }
 
-.toTop{
+.toTop {
   position: fixed;
   bottom: 25px;
   right: 25px;
@@ -164,24 +197,25 @@
   z-index: 5;
 }
 
-.backtoTop{
-    position: fixed;
-    bottom: 75px;
-    right: 25px;
-    background-color: #fff;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    color: #409eff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 0 6px rgb(0 0 0 / 12%);
-    cursor: pointer;
-    z-index: 5;
+.backtoTop {
+  position: fixed;
+  bottom: 75px;
+  right: 25px;
+  background-color: #fff;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #409eff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 0 6px rgb(0 0 0 / 12%);
+  cursor: pointer;
+  z-index: 5;
 }
-.totop{
+
+.totop {
   height: 100%;
   overflow-y: auto;
 }
