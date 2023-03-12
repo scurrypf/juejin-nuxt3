@@ -1,4 +1,4 @@
-import { useGraphql } from '../../utils/usegraphql'
+import { useGraphql } from '../../../utils/usegraphql'
 
 export default defineEventHandler(async () => {
   const reqQuery = `query {
